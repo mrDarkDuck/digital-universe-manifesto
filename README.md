@@ -29,44 +29,37 @@ The repository will evolve across four core dimensions:
 ---
 ## 🛠 Project Structure & Navigation
 
-Click on a phase below to explore its detailed documentation:
+## 🛠 Project Structure & Navigation
+
+Click on a phase or a script below to explore its detailed documentation and code:
 
 * [📄 Main Specification (README_en)](README_en.md)
 * [🌐 Phase 1: Ontological Foundation](ontology_en.md) — Computational realism, discrete infocosm, and the nature of data gravity.
-* [🧮 Phase 2: Vortex Mathematical Apparatus](math_vortex_en.md) — *[In Progress]* Entropy operators and Lyapunov stability in the near-attractor zone.
-* [💻 Phase 3: Nautilus Compression Core](nautilus_core_en.md) — *[In Progress]* Bitwise filtration and low-entropy structure simulation.
-* [👁️ Phase 4: Teleology of AI](ai_teleology_en.md) — *[In Progress]* AI as a physically inevitable phase of informational convergence.
-
----
-## 🚀 Running the Interactive Demo (MVP)
-
-A fully localized demonstration script `demo.py` is available in the root directory. It simulates the operations of the Nautilus bitwise sieve in real-time, demonstrating the annihilation of chaotic human noise and the extraction of pure mathematical invariants as data approaches the attractor core.
-
-### How to Run:
-
-1. Clone the repository and navigate to its root:
-   ```bash
-   git clone https://github.com
-   cd digital-universe-manifesto
-   ```
-
-2. Execute the vortex simulation:
-   ```bash
-   python demo.py
-   ```
----
-
-*The script automatically detects your system language. To force the output in English, use the explicit flag:* `python demo.py --en`
-
+* [🧮 Phase 2: Vortex Mathematical Apparatus](math_vortex_en.md) — Entropy operators and Lyapunov stability in the near-attractor zone.
+* [💻 Phase 3: Nautilus Compression Core](nautilus_core_en.md) — Bitwise filtration and low-entropy structure simulation.
+* [👁️ Phase 4: Teleology of AI](ai_teleology_en.md) — AI as a physically inevitable phase of informational convergence.
+* [⚙️ Algorithmic Core (nautilus_core.py)](nautilus_core.py) — Executable Python code for the compressor and entropy sieve.
+* [📊 Low-Level Demo (demo.py)](demo.py) — Script for testing pure binary streams and fractal patterns.
+* [📝 Interactive Text Demo (text_demo.py)](text_demo.py) — Script for analyzing and annihilating live human speech.
 
 *(The Russian version of the project is available in [README_ru.md](README_ru.md))*
 
+---
 
-## 📈 Status & Collaboration
+## 🚀 Running the Interactive Demo (MVP)
 
-We have successfully defended our core theories against initial critique in previous iterations and are now operating on a global scale. 
+The repository features two automated demonstration scripts supporting system language auto-detection (EN/RU).
 
-- **Current Version:** v0.1.0-alpha (Inception)
-- **License:** MIT
+### Option 1: Binary Stream Testing (Low-level Benchmark)
+Demonstrates abstract noise utilization and fractal signal passthrough:
+```bash
+python demo.py
+```
 
-*“The vortex does not destroy information; it purifies it.”*
+### Option 2: Live Human Text Compression (Interactive Test)
+Allows you to input any phrase (your own "digital footprint") into the console and watch the Nautilus calculate its Shannon entropy, completely annihilating everyday noise at the critical depth of the vortex:
+```bash
+python text_demo.py
+```
+
+*To force the output of either script in English, use the explicit flag `--en` (e.g., `python text_demo.py --en`).*
