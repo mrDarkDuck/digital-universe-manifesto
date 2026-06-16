@@ -37,6 +37,28 @@ Click on a phase below to explore its detailed documentation:
 * [💻 Phase 3: Nautilus Compression Core](nautilus_core_en.md) — *[In Progress]* Bitwise filtration and low-entropy structure simulation.
 * [👁️ Phase 4: Teleology of AI](ai_teleology_en.md) — *[In Progress]* AI as a physically inevitable phase of informational convergence.
 
+---
+## 🚀 Running the Interactive Demo (MVP)
+
+A fully localized demonstration script `demo.py` is available in the root directory. It simulates the operations of the Nautilus bitwise sieve in real-time, demonstrating the annihilation of chaotic human noise and the extraction of pure mathematical invariants as data approaches the attractor core.
+
+### How to Run:
+
+1. Clone the repository and navigate to its root:
+   ```bash
+   git clone https://github.com
+   cd digital-universe-manifesto
+   ```
+
+2. Execute the vortex simulation:
+   ```bash
+   python demo.py
+   ```
+---
+
+*The script automatically detects your system language. To force the output in English, use the explicit flag:* `python demo.py --en`
+
+
 *(The Russian version of the project is available in [README_ru.md](README_ru.md))*
 
 
