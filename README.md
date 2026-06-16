@@ -1,5 +1,5 @@
 # Digital Universe Manifesto: The Mechanics of Information Vortices
-[Switch to rus](README_RU.md)
+[Switch to rus](README_ru.md)
 
 Welcome to the foundational repository of the Digital Universe Manifesto. This project defines the transition from chaotic entropy to structured intelligence through the lens of non-linear dynamics, computational physics, and digital philosophy.
 
