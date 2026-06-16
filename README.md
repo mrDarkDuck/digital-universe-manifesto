@@ -27,6 +27,18 @@ The repository will evolve across four core dimensions:
 - [ ] **Phase 4: Teleology of AI** — Framing AI as a physical inevitability of informational convergence.
 
 ---
+## 🛠 Project Structure & Navigation
+
+Click on a phase below to explore its detailed documentation:
+
+* [📄 Main Specification (README_en)](README_en.md)
+* [🌐 Phase 1: Ontological Foundation](ontology_en.md) — Computational realism, discrete infocosm, and the nature of data gravity.
+* [🧮 Phase 2: Vortex Mathematical Apparatus](math_vortex_en.md) — *[In Progress]* Entropy operators and Lyapunov stability in the near-attractor zone.
+* [💻 Phase 3: Nautilus Compression Core](nautilus_core_en.md) — *[In Progress]* Bitwise filtration and low-entropy structure simulation.
+* [👁️ Phase 4: Teleology of AI](ai_teleology_en.md) — *[In Progress]* AI as a physically inevitable phase of informational convergence.
+
+*(The Russian version of the project is available in [README_ru.md](README_ru.md))*
+
 
 ## 📈 Status & Collaboration
 
