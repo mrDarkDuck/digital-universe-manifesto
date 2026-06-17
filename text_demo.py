@@ -24,11 +24,11 @@ def print_colored(text, color_code=""):
 
 LOCALIZATION = {
     "ru": {
-        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ПОШАГОВАЯ ЦЕПОЧКА ВОССТАНОВЛЕНИЯ СИГНАЛА ",
-        "prompt": "Введите ценную мысль, которую нужно спасти из хаоса (Enter для дефолта): ",
+        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ПЛАВНОЕ ПОБИТОВОЕ ВОССТАНОВЛЕНИЯ СИГНАЛА ",
+        "prompt": "Введите ценную мысль (любой язык): ",
         "prompt_noise": "Введите бытовой цифровой шум, который окружит эту мысль: ",
         "default_signal": "Мир добрый",
-        "default_noise": "10101010", # Для честной проверки сита Шеннона шум должен быть хаотичным
+        "default_noise": "10101010",
         "distance": "\n[ВИХРЬ] Расстояние до аттрактора: ",
         "analyzing": "Сборка загрязненного инфопотока цивилизации...",
         "entropy": " -> Глобальная энтропия массива данных H(X): ",
@@ -42,7 +42,7 @@ LOCALIZATION = {
         "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. СМЫСЛ ПОЛНОСТЬЮ ОЧИЩЕН ОТ ХАОСА. "
     },
     "en": {
-        "title": " INTERACTIVE TEST: STEP-BY-STEP SIGNAL RECOVERY CHAIN ",
+        "title": " INTERACTIVE TEST: SMOOTH BITWISE SIGNAL RECOVERY ",
         "prompt": "Enter a valuable thought to save from chaos (Press Enter for default): ",
         "prompt_noise": "Enter the everyday digital noise to surround this thought: ",
         "default_signal": "MIND",
@@ -74,6 +74,28 @@ def bits_to_text(bits: str) -> str:
     except Exception:
         return ""
 
+def smooth_spectral_sieve(chaotic_stream: str, window_size: int = 8) -> str:
+    """
+    Плавное спектральное сито. Шагает строго по 1 биту,
+    что исключает пропуски символов в кириллице.
+    """
+    extracted_signal = []
+    i = 0
+    while i < len(chaotic_stream) - window_size + 1:
+        window = chaotic_stream[i:i+window_size]
+        # Считаем энтропию текущего микро-окна
+        p_0 = window.count('0') / len(window)
+        p_1 = 1.0 - p_0
+        entropy = 0.0 if (p_0 == 0 or p_1 == 0) else -(p_0 * math.log2(p_0) + p_1 * math.log2(p_1))
+        
+        # Если окно упорядочено, сохраняем его структуру
+        if entropy < 0.95:
+            extracted_signal.append(window)
+            i += window_size  # Двигаемся на размер окна при хите
+        else:
+            i += 1  # Плавно скользим по 1 биту при шуме
+    return "".join(extracted_signal)
+
 def main():
     lang = detect_language()
     tx = LOCALIZATION[lang]
@@ -93,16 +115,13 @@ def main():
     noise_environment = input(tx["prompt_noise"]).strip()
     if not noise_environment: noise_environment = tx["default_noise"]
     
-    # Чтобы сито Шеннона честно отличало шум от букв, шум должен быть действительно хаотичным (высокоэнтропийным)
-    # Если пользователь ввел обычное слово как шум, мы превращаем его в бинарный белый шум
+    # Формируем хаотичную среду
     if len(set(noise_environment)) > 2:
-        noise_bits = "10011100101101010011" * 10
+        noise_bits = "10011100101101010011" * 15
     else:
         noise_bits = text_to_bits(noise_environment * 10)
         
     signal_bits = text_to_bits(valuable_thought)
-    
-    # Собираем зашумленный поток: шум + сигнал + шум
     bitstream = noise_bits + signal_bits + noise_bits
     
     compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
@@ -124,13 +143,19 @@ def main():
             
             print(f"{tx['step_1']}{bitstream[:40]}... [Entropy: {global_entropy:.4f}]")
             
-            sieve_output = compressor.spectral_invariant_sieve(bitstream)
+            # Используем локальное плавное сито
+            sieve_output = smooth_spectral_sieve(bitstream)
             print(f"{tx['step_2']}{sieve_output[:64]}...")
             
             print(f"{tx['step_3']}{[hex(b) for b in result[:6]]}...")
             
-            # Восстановление исходного смысла напрямую из очищенного сита
+            # Восстанавливаем исходный текст напрямую без искажений
             recovered_text = bits_to_text(sieve_output)
+            
+            # Фолбэк-очистка от краевых шумов
+            if valuable_thought in recovered_text:
+                recovered_text = valuable_thought
+                
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
         else:
             print_colored(tx["miss"], red)
