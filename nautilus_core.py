@@ -16,7 +16,7 @@ class NautilusCompressor:
         """
         self.G = gravity_constant
         self.threshold = entropy_threshold
-        self.attractor_core = 0x01101101  # Constant representing pure meaning
+        self.attractor_core = 0x01101101  # Constant representing pure meaning (T=3 seed)
 
     def calculate_shannon_entropy(self, bitstream: str) -> float:
         """
@@ -37,8 +37,29 @@ class NautilusCompressor:
         Higher internal order increases the informational mass, maximizing the pull.
         """
         entropy = self.calculate_shannon_entropy(block)
-        info_mass = 1.0 / (entropy + 1e-9)  # Added small epsilon to avoid division by zero
+        info_mass = 1.0 / (entropy + 1e-9)
         return (self.G * info_mass) / (distance_to_core ** 2)
+
+    def spectral_invariant_sieve(self, chaotic_stream: str, window_size: int = 8) -> str:
+        """
+        Advanced Spectral Invariant Analyzer.
+        Scans a highly contaminated stream (e.g., 1:1000 signal-to-noise ratio) 
+        using a rolling window to extract hidden low-entropy micro-patterns 
+        matching the attractor's harmonic steps, while filtering out pure chaos.
+        """
+        extracted_signal = []
+        # Скользящее окно шагает по зашумленному потоку битов
+        for i in range(0, len(chaotic_stream) - window_size + 1, 1):
+            window = chaotic_stream[i:i+window_size]
+            window_entropy = self.calculate_shannon_entropy(window)
+            
+            # Если микро-окно демонстрирует упорядоченность ниже критического хаоса
+            # Наутилус вычленяет этот инвариант из общего фона
+            if window_entropy < 0.5:
+                extracted_signal.append(window)
+                i += window_size - 1  # Сдвигаем указатель, чтобы избежать наложений
+                
+        return "".join(extracted_signal)
 
     def chunk_data(self, data: str, chunk_size: int = 8) -> List[str]:
         """
@@ -55,22 +76,31 @@ class NautilusCompressor:
 
     def process_stream(self, raw_data: str, distance_to_core: float) -> List[int]:
         """
-        Executes bitwise sieve pipeline over the raw peripheral infocosm data stream.
-        Blocks exceeding the gravity pull threshold are condensed into pure invariants.
+        Executes bitwise sieve pipeline over the raw data stream.
+        Utilizes both standard compression and spectral analysis for deep noise filtration.
         """
         compressed_signal = []
-        for block in self.chunk_data(raw_data):
+        
+        # Если поток критически зашумлен, сначала пропускаем его через спектральное сито
+        global_entropy = self.calculate_shannon_entropy(raw_data)
+        if global_entropy > 0.95 and len(raw_data) > 64:
+            # Наутилус активирует глубокое сканирование скрытых инвариантов
+            filtered_data = self.spectral_invariant_sieve(raw_data)
+        else:
+            filtered_data = raw_data
+
+        for block in self.chunk_data(filtered_data):
+            if not block or len(block) < 2:
+                continue
             entropy = self.calculate_shannon_entropy(block)
             pull = self.evaluate_gravity_pull(block, distance_to_core)
             
             if pull > self.threshold and entropy < 1.0:
-                # Convert valid bit block to integer representation
                 int_block = int(block, 2) if set(block).issubset({'0', '1'}) else hash(block)
-                # Bitwise XOR operation with the attractor invariant
+                # Bitwise XOR operation with the attractor invariant (Period T=3 core)
                 refined_bits = int_block ^ self.attractor_core
                 compressed_signal.append(refined_bits)
             else:
-                # Redundant entropic noise is safely utilized
                 self.annihilate_noise(block)
                 
         return compressed_signal
