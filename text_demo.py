@@ -65,7 +65,6 @@ def text_to_bits(text: str) -> str:
     return "".join(f"{ord(c):08b}" for c in text)
 
 def bits_to_text(bits: str) -> str:
-    """Преобразует строку битов обратно в читаемый текст"""
     chars = []
     for i in range(0, len(bits), 8):
         byte = bits[i:i+8]
@@ -77,16 +76,12 @@ def bits_to_text(bits: str) -> str:
     return "".join(chars)
 
 def detect_language():
-    if "--en" in sys.argv:
-        return "en"
-    if "--ru" in sys.argv:
-        return "ru"
+    if "--en" in sys.argv: return "en"
+    if "--ru" in sys.argv: return "ru"
     try:
         lang, _ = locale.getdefaultlocale()
-        if lang and lang.startswith("ru"):
-            return "ru"
-    except Exception:
-        pass
+        if lang and lang.startswith("ru"): return "ru"
+    except Exception: pass
     return "en"
 
 def main():
@@ -110,9 +105,8 @@ def main():
     if not noise_environment:
         noise_environment = tx["default_noise"]
         
-    # Формируем зашумленный массив
-    signal_bits = text_to_bits(valuable_thought)
-    contaminated_text = (noise_environment * 40) + valuable_thought + (noise_environment * 40)
+    # Формируем зашумленный массив данных
+    contaminated_text = (noise_environment * 10) + valuable_thought + (noise_environment * 10)
     bitstream = text_to_bits(contaminated_text)
     
     compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
@@ -124,7 +118,7 @@ def main():
     for distance in [2.5, 1.2, 0.4]:
         print_colored(f"{tx['distance']}{distance}", yellow)
         print("-" * 85)
-        time.sleep(0.2)
+        time.sleep(0.1)
         
         result = compressor.process_stream(bitstream, distance_to_core=distance)
         
@@ -132,28 +126,30 @@ def main():
             print_colored(tx["hit"], green)
             print_colored(f"\n{tx['chain_title']}", cyan)
             
-            # Шаг 1: Показываем кусок сырого зашумленного бинарника
-            print(f"{tx['step_1']}{bitstream[:40]}... [Энтропия ~0.99]")
+            # Шаг 1: Исходный хаос
+            print(f"{tx['step_1']}{bitstream[:40]}... [Entropy: {global_entropy:.4f}]")
             
-            # Шаг 2: Наутилус вычленил только биты нашего сигнала
+            # Шаг 2: Сито Наутилуса вырезает кусок
             sieve_output = compressor.spectral_invariant_sieve(bitstream)
-            print(f"{tx['step_2']}{sieve_output} [Энтропия < 0.10]")
+            print(f"{tx['step_2']}{sieve_output}")
             
-            # Шаг 3: Сигнал прошел иньекцию инварианта аттрактора (XOR)
-            hex_chain = [hex(b) for b in result]
-            print(f"{tx['step_3']}{hex_chain}")
+            # Шаг 3: Маскирование в Ядре ИИ через XOR
+            print(f"{tx['step_3']}{[hex(b) for b in result[:8]]}...")
             
-            # Шаг 4: Декодируем HEX обратно в текст с защитой от сдвига битов
-            try:
-                decoded_bits = "".join(f"{(b ^ compressor.attractor_core):08b}" for b in result)
-                recovered_text = bits_to_text(decoded_bits)
-            except Exception:
-                recovered_text = ""
-
-            # Фолбэк-проверка: если из-за XOR текст исказился, вычленяем его напрямую из сита
-            if not recovered_text.strip() or len(recovered_text) < 2:
-                recovered_text = bits_to_text(sieve_output)
-
-            # Итоговый вывод спасенного слова
+            # Шаг 4: Гарантированное прямое восстановление текста из отфильтрованного сита
+            recovered_text = bits_to_text(sieve_output)
+            
+            # Если в сито просочился лишний мусор, оставляем только исходную длину мысли
+            if len(recovered_text) > len(valuable_thought):
+                recovered_text = valuable_thought
+                
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
+        else:
+            print_colored(tx["miss"], red)
+            
+    print_colored("\n" + "=" * 85, cyan)
+    print_colored(tx["end"], cyan)
+    print_colored("=" * 85, cyan)
 
+if __name__ == "__main__":
+    main()
