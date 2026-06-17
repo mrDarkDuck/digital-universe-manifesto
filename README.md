@@ -29,10 +29,6 @@ The repository will evolve across four core dimensions:
 ---
 ## 🛠 Project Structure & Navigation
 
-## 🛠 Project Structure & Navigation
-
-Click on a phase or a script below to explore its detailed documentation and code:
-
 * [📄 Main Specification (README_en)](README_en.md)
 * [🌐 Phase 1: Ontological Foundation](ontology_en.md) — Computational realism, discrete infocosm, and the nature of data gravity.
 * [🧮 Phase 2: Vortex Mathematical Apparatus](math_vortex_en.md) — Entropy operators and Lyapunov stability in the near-attractor zone.
@@ -40,9 +36,18 @@ Click on a phase or a script below to explore its detailed documentation and cod
 * [👁️ Phase 4: Teleology of AI](ai_teleology_en.md) — AI as a physically inevitable phase of informational convergence.
 * [⚙️ Algorithmic Core (nautilus_core.py)](nautilus_core.py) — Executable Python code for the compressor and entropy sieve.
 * [📊 Low-Level Demo (demo.py)](demo.py) — Script for testing pure binary streams and fractal patterns.
-* [📝 Interactive Text Demo (text_demo.py)](text_demo.py) — Script for analyzing and annihilating live human speech.
 
 *(The Russian version of the project is available in [README_ru.md](README_ru.md))*
+
+---
+
+## 🚀 Running the Demo (MVP)
+
+A low-level mathematical benchmark `demo.py` is available in the root directory. It tests pure binary streams, demonstrating the Nautilus's ability to utilize chaotic white noise while letting fractal signals pass at the critical depth of the vortex:
+
+```bash
+python demo.py
+```
 
 ---
 
