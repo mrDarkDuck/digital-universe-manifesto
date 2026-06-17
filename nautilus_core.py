@@ -28,7 +28,7 @@ class NautilusCompressor:
             window = chaotic_stream[i:i+window_size]
             window_entropy = self.calculate_shannon_entropy(window)
             
-            # Порог поднят до 0.95 для безопасного пропуска байтов кириллицы
+            # Порог 0.95 для безопасного пропуска байтов кириллицы
             if window_entropy < 0.95:
                 extracted_signal.append(window)
                 i += window_size
@@ -46,7 +46,6 @@ class NautilusCompressor:
         compressed_signal = []
         global_entropy = self.calculate_shannon_entropy(raw_data)
         
-        # Если поток критически зашумлен, активируем сито
         if global_entropy > 0.90 and len(raw_data) > 64:
             filtered_data = self.spectral_invariant_sieve(raw_data)
         else:
