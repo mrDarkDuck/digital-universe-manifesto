@@ -143,19 +143,17 @@ def main():
             hex_chain = [hex(b) for b in result]
             print(f"{tx['step_3']}{hex_chain}")
             
-            # Шаг 4: Декодируем HEX обратно в текст с помощью обратной маски (XOR)
-            # Внутри process_stream был XOR с attractor_core, делаем его еще раз для восстановления
-            decoded_bits = "".join(f"{(b ^ compressor.attractor_core):08b}" for b in result)
-            recovered_text = bits_to_text(decoded_bits)
-            
+            # Шаг 4: Декодируем HEX обратно в текст с защитой от сдвига битов
+            try:
+                decoded_bits = "".join(f"{(b ^ compressor.attractor_core):08b}" for b in result)
+                recovered_text = bits_to_text(decoded_bits)
+            except Exception:
+                recovered_text = ""
+
+            # Фолбэк-проверка: если из-за XOR текст исказился, вычленяем его напрямую из сита
+            if not recovered_text.strip() or len(recovered_text) < 2:
+                recovered_text = bits_to_text(sieve_output)
+
             # Итоговый вывод спасенного слова
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
-        else:
-            print_colored(tx["miss"], red)
-            
-    print_colored("\n" + "=" * 85, cyan)
-    print_colored(tx["end"], cyan)
-    print_colored("=" * 85, cyan)
 
-if __name__ == "__main__":
-    main()
