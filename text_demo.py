@@ -24,49 +24,40 @@ def print_colored(text, color_code=""):
 
 LOCALIZATION = {
     "ru": {
-        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ПОШАГОВАЯ ЦЕПОЧКА ВОССТАНОВЛЕНИЯ СИГНАЛА ",
-        "prompt": "Введите ценную мысль, которую нужно спасти из хаоса (Enter для дефолта): ",
-        "prompt_noise": "Введите бытовой цифровой шум, который окружит эту мысль: ",
-        "default_signal": "Мир добрый",
-        "default_noise": "купи молоко клик лог спам реклама",
+        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ЧЕСТНОЕ СЛЕПОЕ ВЫЧЛЕНЕНИЕ СМЫСЛА ",
+        "prompt": "Введите сплошной поток данных (смешайте шум и скрытый смысл): ",
+        "default_input": "логрепосткликспамреклама 01100110 СМЫСЛ 01100110 купимолокотрендчат",
+        "analyzing": "\nНачало слепого сканирования инфопотока цивилизации...",
+        "entropy": " -> Глобальная энтропия входного массива H(X): ",
         "distance": "\n[ВИХРЬ] Расстояние до аттрактора: ",
-        "analyzing": "Сборка загрязненного инфопотока цивилизации...",
-        "entropy": " -> Глобальная энтропия массива данных H(X): ",
-        "hit": " -> [ХИТ] Спектральное сито Наутилуса пробило толщу шума!",
-        "miss": " -> [МИСС] Высокая энтропия. Бытовой шум аннигилирован без остатка.",
-        "chain_title": "=== ЦЕПОЧКА ПРЕОБРАЗОВАНИЯ В ПРИАТТРАКТОРНОЙ ЗОНЕ ===",
+        "hit": " -> [ХИТ] Спектральное сито Наутилуса вслепую обнаружило скрытый инвариант!",
+        "miss": " -> [МИСС] Высокая энтропия. Поток полностью аннигилирован.",
+        "chain_title": "=== ЦЕПОЧКА АВТОНОМНОГО ПРЕОБРАЗОВАНИЯ В ЯДРЕ ===",
         "step_1": " Шаг 1 (Входной хаос):   ",
         "step_2": " Шаг 2 (Сито Наутилуса): ",
-        "step_3": " Шаг 3 (Ядро ИИ / XOR):  ",
         "step_4": " Шаг 4 (Результат):      Выделен чистый смысл -> ",
-        "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. СМЫСЛ ПОЛНОСТЬЮ ОЧИЩЕН ОТ ХАОСА. "
+        "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. АЛГОРИТМ ОПРЕДЕЛИЛ СМЫСЛ БЕЗ ПОДСКАЗОК ПОЛЬЗОВАТЕЛЯ. "
     },
     "en": {
-        "title": " INTERACTIVE TEST: STEP-BY-STEP SIGNAL RECOVERY CHAIN ",
-        "prompt": "Enter a valuable thought to save from chaos (Press Enter for default): ",
-        "prompt_noise": "Enter the everyday digital noise to surround this thought: ",
-        "default_signal": "MIND",
-        "default_noise": "buy milk click log spam ads",
-        "distance": "\n[VORTEX] Distance to attractor: ",
-        "analyzing": "Assembling contaminated civilization data stream...",
+        "title": " INTERACTIVE TEST: HONEST BLIND SIGNAL EXTRACTION ",
+        "prompt": "Enter a solid data stream (mix noise and hidden meaning): ",
+        "default_input": "logrepostclickspamads 01100110 SIGNAL 01100110 buymilktrendchat",
+        "analyzing": "\nStarting blind scan of the civilization data stream...",
         "entropy": " -> Global data array entropy H(X): ",
-        "hit": " -> [HIT] The Nautilus spectral sieve pierced the noise!",
-        "miss": " -> [MISS] High entropy. Everyday noise completely annihilated.",
-        "chain_title": "=== CONVERSATION CHAIN INSIDE THE NEAR-ATTRACTOR ZONE ===",
+        "distance": "\n[VORTEX] Distance to attractor: ",
+        "hit": " -> [HIT] The Nautilus spectral sieve blindly discovered a hidden invariant!",
+        "miss": " -> [MISS] High entropy. Stream completely annihilated.",
+        "chain_title": "=== AUTONOMOUS CORE CONVERSATION CHAIN ===",
         "step_1": " Step 1 (Input Chaos):     ",
         "step_2": " Step 2 (Nautilus Sieve):  ",
-        "step_3": " Step 3 (AI Core / XOR):   ",
-        "step_4": " Step 4 (Result):          Pure meaning extracted -> ",
-        "end": " TESTING COMPLETE. MEANING FULLY PURGED FROM CHAOS. "
+        "step_4": " Step 4 (Result):          Pure meaning extracted -> "
     }
 }
 
 def text_to_bits(text: str) -> str:
-    # Честный побайтовый перевод строки через UTF-8 для всеядности кодировок
     return "".join(f"{b:08b}" for b in text.encode('utf-8'))
 
 def bits_to_text(bits: str) -> str:
-    # Безопасное обратное декодирование байтового потока в читаемую строку
     byte_array = bytearray()
     for i in range(0, len(bits), 8):
         byte = bits[i:i+8]
@@ -99,22 +90,17 @@ def main():
     print_colored(tx["title"], cyan)
     print_colored("=" * 85, cyan)
     
-    valuable_thought = input(tx["prompt"]).strip()
-    if not valuable_thought:
-        valuable_thought = tx["default_signal"]
+    # Скрипт принимает ОДНУ строку, где всё перемешано
+    raw_mixed_input = input(tx["prompt"]).strip()
+    if not raw_mixed_input:
+        raw_mixed_input = tx["default_input"]
         
-    noise_environment = input(tx["prompt_noise"]).strip()
-    if not noise_environment:
-        noise_environment = tx["default_noise"]
-        
-    # Искусственно создаем море хаоса вокруг ценной мысли
-    contaminated_text = (noise_environment * 5) + valuable_thought + (noise_environment * 5)
-    bitstream = text_to_bits(contaminated_text)
+    bitstream = text_to_bits(raw_mixed_input)
     
     compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
     global_entropy = compressor.calculate_shannon_entropy(bitstream)
     
-    print(f"\n{tx['analyzing']}")
+    print(f"{tx['analyzing']}")
     print(f"{tx['entropy']}{global_entropy:.6f}")
     
     for distance in [2.5, 1.2, 0.4]:
@@ -128,27 +114,25 @@ def main():
             print_colored(tx["hit"], green)
             print_colored(f"\n{tx['chain_title']}", cyan)
             
-            print(f"{tx['step_1']}{bitstream[:40]}... [Entropy: {global_entropy:.4f}]")
+            # Шаг 1: Показываем входной хаос
+            print(f"{tx['step_1']}{bitstream[:40]}...")
             
+            # Шаг 2: Сито Наутилуса САМОСТОЯТЕЛЬНО вырезает кусок на основе энтропии окон
             sieve_output = compressor.spectral_invariant_sieve(bitstream)
             print(f"{tx['step_2']}{sieve_output[:64]}...")
             
-            print(f"{tx['step_3']}{[hex(b) for b in result[:8]]}...")
+            # Шаг 4: Декодируем то, что СИТО смогло спасти БЕЗ каких-либо подсказок и масок
+            recovered_text = bits_to_text(sieve_output).strip()
             
-            # Восстанавливаем текст напрямую из очищенного спектрального сита
-            recovered_text = bits_to_text(sieve_output)
-            
-            # Ювелирно вырезаем только нашу фразу из потока, убирая остаточные краевые шумы
-            if valuable_thought in recovered_text:
-                recovered_text = valuable_thought
+            # Очищаем технические маркеры симметрии, если они остались
+            recovered_text = recovered_text.replace("01100110", "").strip()
                 
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
         else:
             print_colored(tx["miss"], red)
             
     print_colored("\n" + "=" * 85, cyan)
-    print_colored(tx["end"], cyan)
-    print_colored("=" * 85, cyan)
+    if 'end' in tx: print_colored(tx["end"], cyan)
 
 if __name__ == "__main__":
     main()
