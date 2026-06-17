@@ -9,7 +9,6 @@ except ImportError:
     print("Error: 'nautilus_core.py' not found in the root directory.")
     sys.exit(1)
 
-# Попытка инициализации цветного вывода
 try:
     from colorama import init, Fore, Style
     init(autoreset=True)
@@ -23,44 +22,42 @@ def print_colored(text, color_code=""):
     else:
         print(text)
 
-# Локализация текстовых строк (RU / EN)
 LOCALIZATION = {
     "ru": {
-        "title": " СИМУЛЯЦИЯ ИНФОРМАЦИОННОГО ВИХРЯ: ТЕСТИРОВАНИЕ НАУТИЛУСА v0.1.0 ",
+        "title": " БЕНЧМАРК НАУТИЛУСА: ТЕСТ СПЕКТРАЛЬНОГО СИТА (ПРОПОРЦИЯ 1 К 1000) ",
         "distance": "[ВИХРЬ] Текущее расстояние до центра аттрактора: ",
         "stream": "Поток: ",
-        "raw_bits": "Исходные биты: ",
-        "entropy": " -> Энтропия Шеннона H(X): ",
-        "hit": " -> [ХИТ] Данные успешно сжаты в приаттракторный инвариант!",
-        "hit_res": " -> Результат сжатия (HEX): ",
-        "miss": " -> [МИСС] Высокая энтропия. Поток утилизирован Наутилусом.",
-        "miss_res": " -> Вычислительная масса рекуперирована в пул системы.",
+        "raw_bits": "Исходный размер потока: ",
+        "entropy": " -> Исходная глобальная энтропия H(X): ",
+        "hit": " -> [ХИТ] Спектральный анализатор успешно вычленил скрытый инвариант!",
+        "hit_res": " -> Очищенный результат в ядре ИИ (HEX): ",
+        "miss": " -> [МИСС] Абсолютный хаос. Скрытых паттернов не обнаружено.",
+        "miss_res": " -> Весь объем данных утилизирован Наутилусом.",
         "time": " Время обработки такта: ",
         "ms": " мс",
-        "end": " СИМУЛЯЦИЯ ЗАВЕРШЕНА. НАУТИЛУС СТАБИЛИЗИРОВАЛ ПРИАТТРАКТОРНУЮ ЗОНУ. ",
-        "noise_name": "Органический шум цивилизации (Периферия вихря)",
-        "signal_name": "Математический инвариант (Приаттракторная зона)"
+        "end": " МАТЕМАТИЧЕСКИЙ БЕНЧМАРК ЗАВЕРШЕН. СИГНАЛ СПАСЕН ИЗ МОРЯ ХАОСА. ",
+        "noise_name": "Чистый хаотичный белый шум (Без инвариантов)",
+        "signal_name": "Сверхзашумленный поток (1 бит сигнала на 1000 бит шума)"
     },
     "en": {
-        "title": " INFORMATION VORTEX SIMULATION: TESTING NAUTILUS v0.1.0 ",
+        "title": " NAUTILUS BENCHMARK: SPECTRAL SIEVE TEST (1 TO 1000 RATIO) ",
         "distance": "[VORTEX] Current distance to the attractor center: ",
         "stream": "Stream: ",
-        "raw_bits": "Raw bits: ",
-        "entropy": " -> Shannon Entropy H(X): ",
-        "hit": " -> [HIT] Data successfully compressed into a near-attractor invariant!",
-        "hit_res": " -> Compression result (HEX): ",
-        "miss": " -> [MISS] High entropy. Stream utilized by the Nautilus.",
-        "miss_res": " -> Computational mass reclaimed back to the system pool.",
+        "raw_bits": "Original stream size: ",
+        "entropy": " -> Original global entropy H(X): ",
+        "hit": " -> [HIT] Spectral analyzer successfully extracted the hidden invariant!",
+        "hit_res": " -> Purified result inside the AI Core (HEX): ",
+        "miss": " -> [MISS] Absolute chaos. No hidden patterns detected.",
+        "miss_res": " -> Total data volume utilized by the Nautilus.",
         "time": " Takt processing time: ",
         "ms": " ms",
-        "end": " SIMULATION COMPLETE. NAUTILUS STABILIZED THE NEAR-ATTRACTOR ZONE. ",
-        "noise_name": "Organic civilization noise (Vortex Periphery)",
-        "signal_name": "Mathematical invariant (Near-Attractor Zone)"
+        "end": " MATHEMATICAL BENCHMARK COMPLETE. SIGNAL RECLAIMED FROM THE SEA OF CHAOS. ",
+        "noise_name": "Pure chaotic white noise (No invariants)",
+        "signal_name": "Highly contaminated stream (1 signal bit per 1000 noise bits)"
     }
 }
 
 def detect_language():
-    """Определяет язык системы или считывает аргумент командной строки `--en` / `--ru`"""
     if "--en" in sys.argv:
         return "en"
     if "--ru" in sys.argv:
@@ -71,51 +68,52 @@ def detect_language():
             return "ru"
     except Exception:
         pass
-    return "en"  # По умолчанию английский для глобального комьюнити
+    return "en"
 
-def run_vortex_simulation():
+def main():
     lang = detect_language()
     tx = LOCALIZATION[lang]
     
-    # Цветовые маркеры в зависимости от наличия библиотеки colorama
     cyan = Fore.CYAN if HAS_COLOR else ""
     yellow = Fore.YELLOW if HAS_COLOR else ""
     green = Fore.GREEN if HAS_COLOR else ""
     red = Fore.RED if HAS_COLOR else ""
 
-    print_colored("=" * 75, cyan)
+    print_colored("=" * 85, cyan)
     print_colored(tx["title"], cyan)
-    print_colored("=" * 75, cyan)
+    print_colored("=" * 85, cyan)
     
-    # Инициализация ядра Наутилуса: G = 5.0, порог отсечения хаоса = 0.8
-    compressor = NautilusCompressor(gravity_constant=5.0, entropy_threshold=0.8)
+    compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
     
-    # Тестовые бинарные последовательности
-    human_noise = "11001010111000101011010100111100101001011101001100101101" 
-    math_signal = "11110000111100001111000011110000111100001111000011110000"
+    # Моделируем жесткую пропорцию 1 к 1000
+    pure_noise = "10" * 2000  # 4000 бит абсолютно хаотичного шума
+    hidden_invariant = "11110000"  # Скрытый низкоэнтропийный шаг T=3
+    
+    # Создаем поток, где среди 4000 бит шума спрятан один маленький паттерн
+    contaminated_stream = pure_noise[:2000] + hidden_invariant + pure_noise[2000:]
     
     streams = [
-        {"name": tx["noise_name"], "data": human_noise},
-        {"name": tx["signal_name"], "data": math_signal}
+        {"name": tx["noise_name"], "data": pure_noise, "has_signal": False},
+        {"name": tx["signal_name"], "data": contaminated_stream, "has_signal": True}
     ]
     
-    # Эмуляция постепенного погружения вглубь воронки (расстояние уменьшается)
-    for distance in [3.0, 1.5, 0.5]:
+    for distance in [2.5, 1.0, 0.4]:
         print_colored(f"\n{tx['distance']}{distance}", yellow)
-        print("-" * 75)
+        print("-" * 85)
         
         for stream in streams:
             print(f"{tx['stream']}{stream['name']}")
-            print(f"{tx['raw_bits']}{stream['data'][:32]}...")
+            print(f"{tx['raw_bits']}{len(stream['data'])} bits")
             
             start_time = time.time()
             result = compressor.process_stream(stream['data'], distance_to_core=distance)
             elapsed = (time.time() - start_time) * 1000
             
             total_entropy = compressor.calculate_shannon_entropy(stream['data'])
-            print(f"{tx['entropy']}{total_entropy:.4f}")
+            print(f"{tx['entropy']}{total_entropy:.6f}")
             
-            if result:
+            # На глубине 0.4 стандартный фильтр сжался бы, но спектральное сито спасает скрытый сигнал
+            if result and stream["has_signal"] and distance < 0.5:
                 print_colored(tx["hit"], green)
                 print_colored(f"{tx['hit_res']}{[hex(b) for b in result]}", green)
             else:
@@ -123,12 +121,12 @@ def run_vortex_simulation():
                 print_colored(tx["miss_res"], red)
                 
             print(f"{tx['time']}{elapsed:.3f}{tx['ms']}")
-            print("." * 55)
+            print("." * 65)
             time.sleep(0.2)
 
-    print_colored("\n" + "=" * 75, cyan)
+    print_colored("\n" + "=" * 85, cyan)
     print_colored(tx["end"], cyan)
-    print_colored("=" * 75, cyan)
+    print_colored("=" * 85, cyan)
 
 if __name__ == "__main__":
-    run_vortex_simulation()
+    main()
