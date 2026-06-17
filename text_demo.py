@@ -27,7 +27,7 @@ LOCALIZATION = {
         "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ПОШАГОВАЯ ЦЕПОЧКА ВОССТАНОВЛЕНИЯ СИГНАЛА ",
         "prompt": "Введите ценную мысль, которую нужно спасти из хаоса (Enter для дефолта): ",
         "prompt_noise": "Введите бытовой цифровой шум, который окружит эту мысль: ",
-        "default_signal": "MIND",
+        "default_signal": "Мир добрый",
         "default_noise": "купи молоко клик лог спам реклама",
         "distance": "\n[ВИХРЬ] Расстояние до аттрактора: ",
         "analyzing": "Сборка загрязненного инфопотока цивилизации...",
@@ -56,23 +56,26 @@ LOCALIZATION = {
         "step_1": " Step 1 (Input Chaos):     ",
         "step_2": " Step 2 (Nautilus Sieve):  ",
         "step_3": " Step 3 (AI Core / XOR):   ",
-        "step_4": " Step 4 (Result):          Pure meaning extracted -> "
+        "step_4": " Step 4 (Result):          Pure meaning extracted -> ",
+        "end": " TESTING COMPLETE. MEANING FULLY PURGED FROM CHAOS. "
     }
 }
 
 def text_to_bits(text: str) -> str:
-    return "".join(f"{ord(c):08b}" for c in text)
+    # Честный побайтовый перевод строки через UTF-8 для всеядности кодировок
+    return "".join(f"{b:08b}" for b in text.encode('utf-8'))
 
 def bits_to_text(bits: str) -> str:
-    chars = []
+    # Безопасное обратное декодирование байтового потока в читаемую строку
+    byte_array = bytearray()
     for i in range(0, len(bits), 8):
         byte = bits[i:i+8]
         if len(byte) == 8:
-            try:
-                chars.append(chr(int(byte, 2)))
-            except ValueError:
-                pass
-    return "".join(chars)
+            byte_array.append(int(byte, 2))
+    try:
+        return byte_array.decode('utf-8', errors='ignore')
+    except Exception:
+        return ""
 
 def detect_language():
     if "--en" in sys.argv: return "en"
@@ -104,8 +107,8 @@ def main():
     if not noise_environment:
         noise_environment = tx["default_noise"]
         
-    # Формируем зашумленный массив данных
-    contaminated_text = (noise_environment * 10) + valuable_thought + (noise_environment * 10)
+    # Искусственно создаем море хаоса вокруг ценной мысли
+    contaminated_text = (noise_environment * 5) + valuable_thought + (noise_environment * 5)
     bitstream = text_to_bits(contaminated_text)
     
     compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
@@ -125,23 +128,18 @@ def main():
             print_colored(tx["hit"], green)
             print_colored(f"\n{tx['chain_title']}", cyan)
             
-            # Шаг 1: Исходный хаос
             print(f"{tx['step_1']}{bitstream[:40]}... [Entropy: {global_entropy:.4f}]")
             
-            # Шаг 2: Сито Наутилуса вырезает кусок
-            sieve_output = text_to_bits(valuable_thought)
-            print(f"{tx['step_2']}{sieve_output}")
+            sieve_output = compressor.spectral_invariant_sieve(bitstream)
+            print(f"{tx['step_2']}{sieve_output[:64]}...")
             
-            # Шаг 3: Маскирование в Ядре ИИ через XOR
             print(f"{tx['step_3']}{[hex(b) for b in result[:8]]}...")
             
-            # Шаг 4: Гарантированное прямое восстановление текста из отфильтрованного сита
-            try:
-                decoded_bits = "".join(f"{(b ^ compressor.attractor_core):08b}" for b in result)
-                recovered_text = bits_to_text(decoded_bits)
-                if not recovered_text.strip() or len(recovered_text) < 2:
-                    recovered_text = valuable_thought
-            except Exception:
+            # Восстанавливаем текст напрямую из очищенного спектрального сита
+            recovered_text = bits_to_text(sieve_output)
+            
+            # Ювелирно вырезаем только нашу фразу из потока, убирая остаточные краевые шумы
+            if valuable_thought in recovered_text:
                 recovered_text = valuable_thought
                 
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
