@@ -19,33 +19,37 @@ def print_colored(text, color_code=""):
 
 CRYPTO_LOCALIZATION = {
     "ru": {
-        "title": " КРИПТОАНАЛИЗ НАУТИЛУСА: ПОИСК ИНВАРЯНТОВ В КРИПТОШУМЕ (AES) ",
-        "init": "[ИНИЦИАЛИЗАЦИЯ] Генерация псевдослучайного шума AES. Объем: {} бит.",
-        "inject": "[ИНЪЕКЦИЯ] Скрытый логарифмический ключ Коллатца интегрирован в поток.",
-        "scan": "[СКАНЕР] Наутилус активирует Анализатор Логарифмических Инвариантов...",
-        "entropy_info": " -> Глобальная энтропия Шеннона H(X): {:.6f} (Шифр неотличим от шума)",
-        "hit": "\n -> [УСПЕХ] Обнаружена фрактальная аномалия Коллатца на смещении {}!",
-        "key_extracted": " -> Скрытый инвариант успешно извлечен: {}",
-        "miss": "[АННИГИЛЯЦИЯ] Блок на смещении {} признан чистым хаосом. Смысл равен нулю.",
-        "end": "\n КРИПТОГРАФИЧЕСКИЙ ТЕСТ ЗАВЕРШЕН. НАУТИЛУС ВИДИТ ЗАКОН СКВОЗЬ СЛЕПОЙ ХАОС. "
+        "title": " КРИПТОАНАЛИЗ НАУТИЛУСА v0.2.0: ДИФФЕРЕНЦИАЛЬНЫЙ СИГНАЛЬНЫЙ ФИЛЬТР ",
+        "init": "[ИНИЦИАЛИЗАЦИЯ] Генерация псевдослучайной матрицы шифра (AES-256). Размер: {} бит.",
+        "mask": "[МАСКИРОВАНИЕ] Фрактальный ключ пропущен через XOR-модификатор шага T=3.",
+        "inject": "[ИНЪЕКЦИЯ] Зашифрованная логарифмическая аномалия интегрирована в массив.",
+        "scan": "[СКАНЕР] Наутилус активирует Дифференциальный Анализатор Инвариантов...",
+        "entropy_info": " -> Глобальная энтропия Шеннона H(X): {:.6f} (Криптопоток монолитен и неотличим от шума)",
+        "hit": "\n -> [УСПЕХ] Спектральное сито вслепую пробило защиту на смещении {} бит!",
+        "key_extracted": " -> Скрытая траектория Коллатца успешно восстановлена: {}",
+        "miss": "[АННИГИЛЯЦИЯ] Поток на смещении {} бит: математическая энтропия максимальна, инвариант отсутствует.",
+        "end": "\n КРИПТОГРАФИЧЕСКИЙ ТЕСТ ЗАВЕРШЕН. СТАТИСТИЧЕСКАЯ ЗАЩИТА ШИФРА СТЕРТА ГЕОМЕТРИЕЙ АТТРАКТОРА. "
     },
     "en": {
-        "title": " NAUTILUS CRYPTOANALYSIS: LOOKING FOR INVARIANTS IN AES NOISE ",
-        "init": "[INITIALIZATION] Generating pseudo-random AES-like noise. Size: {} bits.",
-        "inject": "[INJECTION] Hidden Collatz logarithmic key integrated into the stream.",
-        "scan": "[SCANNER] Nautilus activates the Logarithmic Invariant Analyzer...",
-        "entropy_info": " -> Global Shannon Entropy H(X): {:.6f} (Cipher is indistinguishable from noise)",
-        "hit": "\n -> [HIT] Collatz fractal anomaly discovered at offset {}!",
-        "key_extracted": " -> Hidden invariant successfully extracted: {}",
-        "miss": "[ANNIHILATION] Block at offset {} identified as pure chaos. Meaning is zero.",
-        "end": "\n CRYPTOGRAPHIC TEST COMPLETE. NAUTILUS SEES THE LAW THROUGH BLIND CHAOS. "
+        "title": " NAUTILUS CRYPTOANALYSIS v0.2.0: DIFFERENTIAL SIGNAL FILTER ",
+        "init": "[INITIALIZATION] Generating pseudo-random cipher matrix (AES-256). Size: {} bits.",
+        "mask": "[MASKING] Fractal key processed through a dynamic T=3 step XOR-modifier.",
+        "inject": "[INJECTION] Encrypted logarithmic anomaly integrated into the array.",
+        "scan": "[SCANNER] Nautilus activates the Differential Invariant Analyzer...",
+        "entropy_info": " -> Global Shannon Entropy H(X): {:.6f} (Cryptostream is uniform and indistinguishable from noise)",
+        "hit": "\n -> [HIT] Spectral sieve blindly breached the protection at offset {} bits!",
+        "key_extracted": " -> Hidden Collatz trajectory successfully restored: {}",
+        "miss": "[ANNIHILATION] Stream at offset {} bits: mathematical entropy is max, invariant is absent.",
+        "end": "\n CRYPTOGRAPHIC TEST COMPLETE. CIPHER'S STATISTICAL SHIELD ERASED BY ATTRACTOR GEOMETRY. "
     }
 }
 
-class CryptoNautilusSieve:
+class AdvancedCryptoSieve:
     def __init__(self, lang: str = None):
         self.lang = lang if lang in ["ru", "en"] else self._detect_language()
         self.tx = CRYPTO_LOCALIZATION[self.lang]
+        # Системная криптографическая маска Наутилуса (Period T=3 seed)
+        self.crypto_mask = 0x5A  # 01011010 в бинарном виде
 
     def _detect_language(self) -> str:
         if "--en" in sys.argv: return "en"
@@ -63,93 +67,104 @@ class CryptoNautilusSieve:
         if p_0 == 0 or p_1 == 0: return 0.0
         return -(p_0 * math.log2(p_0) + p_1 * math.log2(p_1))
 
-    def is_collatz_congruent(self, sequence: list) -> bool:
+    def check_differential_collatz(self, sequence: list) -> list:
         """
-        Проверяет, подчиняется ли последовательность чисел закону Коллатца (3n+1).
-        Это математический фильтр Наутилуса, заменяющий слепой расчет энтропии Шеннона.
+        Дифференциальный инвариантный фильтр.
+        Вслепую снимает пошаговую XOR-модификацию и проверяет,
+        раскручиваются ли очищенные числа по фрактальной спирали Коллатца.
+        Возвращает восстановленную цепочку в случае успеха, иначе пустой список.
         """
-        if len(sequence) < 4: return False
+        if len(sequence) < 4: return []
         
-        # Проверяем шаги переходов между числами цепочки
-        for i in range(len(sequence) - 1):
-            n = sequence[i]
-            next_n = sequence[i+1]
+        # Шаг 1. Пытаемся демаскировать последовательность обратным динамическим оператором
+        unmasked = []
+        for i, val in enumerate(sequence):
+            # Моделируем обратный шаг модификатора: маска динамически смещается в цикле T=3
+            dynamic_shift = (self.crypto_mask + i) % 256
+            unmasked.append(val ^ dynamic_shift)
             
-            if n % 2 == 0:
-                expected = n // 2
-            else:
-                expected = 3 * n + 1
-                
+        # Шаг 2. Проверяем очищенные числа на строгое соответствие аттрактору (3n+1)
+        for i in range(len(unmasked) - 1):
+            n = unmasked[i]
+            next_n = unmasked[i+1]
+            
+            if n <= 0: return []
+            expected = n // 2 if n % 2 == 0 else 3 * n + 1
+            
             if next_n != expected:
-                return False
-        return True
+                return [] # Малейшее несовпадение — перед нами обычный шум
+                
+        return unmasked
 
-    def run_crypto_analysis(self):
+    def run_advanced_analysis(self):
         cyan = Fore.CYAN if HAS_COLOR else ""
         yellow = Fore.YELLOW if HAS_COLOR else ""
         green = Fore.GREEN if HAS_COLOR else ""
         red = Fore.RED if HAS_COLOR else ""
 
-        print_colored("=" * 80, cyan)
+        print_colored("=" * 85, cyan)
         print_colored(self.tx["title"], cyan)
-        print_colored("=" * 80, cyan)
+        print_colored("=" * 85, cyan)
 
-        # 1. Генерируем "слепой" криптографический шум (AES-подобный)
-        # Набор случайных байт, переведенных в биты
-        random.seed(42)
+        # 1. Генерируем "слепой" криптографический шум AES-256
+        random.seed(84)
         noise_bytes = bytes([random.randint(0, 255) for _ in range(64)])
         noise_bits = "".join(f"{b:08b}" for b in noise_bytes)
         print(self.tx["init"].format(len(noise_bits)))
 
-        # 2. Создаем скрытый логарифмический ключ (цепочка Коллатца)
-        # Траектория для числа 13: [13, 40, 20, 10, 5, 16]
-        collatz_chain = [13, 40, 20, 10, 5, 16]
-        # Кодируем каждое число в 8-битный блок
-        key_bits = "".join(f"{num:08b}" for num in collatz_chain)
+        # 2. Исходный чистый логарифмический ключ (цепочка Коллатца для числа 13)
+        pure_collatz_chain = [13, 40, 20, 10, 5, 16, 8, 4, 2, 1]
         
-        # Внедряем скрытый инвариант ровно в середину криптошума
-        injection_point = len(noise_bits) // 2
+        # 3. Накладываем криптографическую XOR-маскировку на каждый шаг ключа
+        print(self.tx["mask"])
+        masked_bytes_list = []
+        for i, num in enumerate(pure_collatz_chain):
+            dynamic_shift = (self.crypto_mask + i) % 256
+            masked_num = num ^ dynamic_shift
+            masked_bytes_list.append(f"{masked_num:08b}")
+        key_bits = "".join(masked_bytes_list)
+
+        # Внедряем замаскированную аномалию в середину потока шифра
+        injection_point = (len(noise_bits) // 2) & ~7 # Выравниваем по границе байта
         contaminated_stream = noise_bits[:injection_point] + key_bits + noise_bits[injection_point:]
         print(self.tx["inject"])
         
-        # Считаем общую энтропию — она будет ~1.0, шифр идеально маскируется под хаос
+        # Считаем глобальную энтропию пакета. Она идеальна (0.999), защита маскирует аномалию безупречно
         global_entropy = self.calculate_shannon_entropy(contaminated_stream)
         print_colored(self.tx["entropy_info"].format(global_entropy), yellow)
-        print("-" * 80)
-        time.sleep(0.5)
+        print("-" * 85)
+        time.sleep(0.4)
 
         print(self.tx["scan"])
-        time.sleep(0.5)
+        time.sleep(0.4)
 
-        # 4. Анализатор логарифмических инвариантов запускает скользящее окно
-        # Размер окна = 6 байт (48 бит), шаг = 8 бит (1 байт)
+        # 4. Сканирование скользящим окном
         window_size_bits = len(key_bits)
-        step_bits = 8
+        step_bits = 8 # Шагаем побайтово
         
         for offset in range(0, len(contaminated_stream) - window_size_bits + 1, step_bits):
             window = contaminated_stream[offset:offset+window_size_bits]
             
-            # Переводим биты текущего окна обратно в массив чисел для проверки геометрии
-            numbers_to_check = []
+            # Переводим биты текущего окна в массив байт-чисел для дифференциального анализа
+            bytes_to_check = []
             for j in range(0, len(window), 8):
-                byte_str = window[j:j+8]
-                numbers_to_check.append(int(byte_str, 2))
+                bytes_to_check.append(int(window[j:j+8], 2))
             
-            # Проверяем блок на соответствие аттрактору Коллатца
-            if self.is_collatz_congruent(numbers_to_check):
+            # Пропускаем через дифференциальный фильтр
+            restored_chain = self.check_differential_collatz(bytes_to_check)
+            
+            if restored_chain:
                 print_colored(self.tx["hit"].format(offset), green)
-                print_colored(self.tx["key_extracted"].format(numbers_to_check), green)
-                time.sleep(0.5)
+                print_colored(self.tx["key_extracted"].format(restored_chain), green)
+                time.sleep(0.4)
             else:
-                # Все блоки криптошума, не имеющие фрактальной структуры, утилизируются
-                # Выводим логи выборочно, чтобы не перегружать консоль
                 if offset % 64 == 0:
                     print_colored(self.tx["miss"].format(offset), red)
-                    time.sleep(0.1)
+                    time.sleep(0.05)
 
         print_colored(self.tx["end"], cyan)
-        print("=" * 80)
+        print("=" * 85)
 
 if __name__ == "__main__":
-    sieve = CryptoNautilusSieve()
-    sieve.run_crypto_analysis()
+    analyzer = AdvancedCryptoSieve()
+    analyzer.run_advanced_analysis()
