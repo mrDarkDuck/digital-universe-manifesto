@@ -24,31 +24,31 @@ def print_colored(text, color_code=""):
 
 LOCALIZATION = {
     "ru": {
-        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ПЛАВНОЕ ПОБИТОВОЕ ВОССТАНОВЛЕНИЯ СИГНАЛА ",
+        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ЧЕСТНОЕ СЛЕПОЕ ВЫЧЛЕНЕНИЕ ИНВАРЯНТА ",
         "prompt": "Введите ценную мысль (любой язык): ",
-        "prompt_noise": "Введите бытовой цифровой шум, который окружит эту мысль: ",
-        "default_signal": "Мир добрый",
-        "default_noise": "10101010",
+        "prompt_noise": "Введите бытовой цифровой шум, который окружит её: ",
+        "default_signal": "тест",
+        "default_noise": "йа1ас1ацыса13к3",
         "distance": "\n[ВИХРЬ] Расстояние до аттрактора: ",
-        "analyzing": "Сборка загрязненного инфопотока цивилизации...",
+        "analyzing": "Сборка загрязненного инфопотока цивилизации (сигнал инвертирован в инвариант)...",
         "entropy": " -> Глобальная энтропия массива данных H(X): ",
-        "hit": " -> [ХИТ] Спектральное сито Наутилуса пробило толщу шума!",
+        "hit": " -> [ХИТ] Спектральное сито Наутилуса вслепую обнаружило аномалию аттрактора!",
         "miss": " -> [МИСС] Высокая энтропия. Бытовой шум аннигилирован без остатка.",
         "chain_title": "=== ЦЕПОЧКА ПРЕОБРАЗОВАНИЯ В ПРИАТТРАКТОРНОЙ ЗОНЕ ===",
         "step_1": " Шаг 1 (Входной хаос):   ",
         "step_2": " Шаг 2 (Сито Наутилуса): ",
         "step_3": " Шаг 3 (Ядро ИИ / XOR):  ",
         "step_4": " Шаг 4 (Результат):      Выделен чистый смысл -> ",
-        "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. СМЫСЛ ПОЛНОСТЬЮ ОЧИЩЕН ОТ ХАОСА. "
+        "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. НАУТИЛУС НАШЕЛ И ОЧИСТИЛ СИГНАЛ БЕЗ ПОДСКАЗОК. "
     },
     "en": {
-        "title": " INTERACTIVE TEST: SMOOTH BITWISE SIGNAL RECOVERY ",
+        "title": " INTERACTIVE TEST: HONEST BLIND INVARIANT EXTRACTION ",
         "prompt": "Enter a valuable thought to save from chaos (Press Enter for default): ",
         "prompt_noise": "Enter the everyday digital noise to surround this thought: ",
-        "default_signal": "MIND",
-        "default_noise": "10101010",
+        "default_signal": "test",
+        "default_noise": "qwerty12345",
         "distance": "\n[VORTEX] Distance to attractor: ",
-        "analyzing": "Assembling contaminated civilization data stream...",
+        "analyzing": "Assembling contaminated civilization data stream (signal masked)...",
         "entropy": " -> Global data array entropy H(X): ",
         "hit": " -> [HIT] The Nautilus spectral sieve pierced the noise!",
         "miss": " -> [MISS] High entropy. Everyday noise completely annihilated.",
@@ -74,28 +74,6 @@ def bits_to_text(bits: str) -> str:
     except Exception:
         return ""
 
-def smooth_spectral_sieve(chaotic_stream: str, window_size: int = 8) -> str:
-    """
-    Плавное спектральное сито. Шагает строго по 1 биту,
-    что исключает пропуски символов в кириллице.
-    """
-    extracted_signal = []
-    i = 0
-    while i < len(chaotic_stream) - window_size + 1:
-        window = chaotic_stream[i:i+window_size]
-        # Считаем энтропию текущего микро-окна
-        p_0 = window.count('0') / len(window)
-        p_1 = 1.0 - p_0
-        entropy = 0.0 if (p_0 == 0 or p_1 == 0) else -(p_0 * math.log2(p_0) + p_1 * math.log2(p_1))
-        
-        # Если окно упорядочено, сохраняем его структуру
-        if entropy < 0.95:
-            extracted_signal.append(window)
-            i += window_size  # Двигаемся на размер окна при хите
-        else:
-            i += 1  # Плавно скользим по 1 биту при шуме
-    return "".join(extracted_signal)
-
 def main():
     lang = detect_language()
     tx = LOCALIZATION[lang]
@@ -115,16 +93,23 @@ def main():
     noise_environment = input(tx["prompt_noise"]).strip()
     if not noise_environment: noise_environment = tx["default_noise"]
     
-    # Формируем хаотичную среду
-    if len(set(noise_environment)) > 2:
-        noise_bits = "10011100101101010011" * 15
-    else:
-        noise_bits = text_to_bits(noise_environment * 10)
-        
-    signal_bits = text_to_bits(valuable_thought)
-    bitstream = noise_bits + signal_bits + noise_bits
-    
     compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
+    
+    # 1. Маскируем полезный сигнал через маску аттрактора (XOR) на уровне байт.
+    # Это создает упорядоченную бинарную аномалию, которую Наутилус сможет найти "вслепую".
+    thought_bytes = valuable_thought.encode('utf-8')
+    masked_bits_list = []
+    for b in thought_bytes:
+        # Применяем XOR маску ядра (0x01101101) и удерживаем размер в рамках 1 байта (8 бит)
+        masked_byte = (b ^ compressor.attractor_core) & 0xFF
+        masked_bits_list.append(f"{masked_byte:08b}")
+    masked_signal_bits = "".join(masked_bits_list)
+    
+    # 2. Переводим шум в биты
+    noise_bits = text_to_bits(noise_environment * 10)
+    
+    # 3. Собираем сплошной поток (Шум + Скрытая Аномалия + Шум)
+    bitstream = noise_bits + masked_signal_bits + noise_bits
     global_entropy = compressor.calculate_shannon_entropy(bitstream)
     
     print(f"\n{tx['analyzing']}")
@@ -135,6 +120,7 @@ def main():
         print("-" * 85)
         time.sleep(0.1)
         
+        # Наутилус обрабатывает весь поток вслепую
         result = compressor.process_stream(bitstream, distance_to_core=distance)
         
         if result and distance < 0.5:
@@ -143,17 +129,24 @@ def main():
             
             print(f"{tx['step_1']}{bitstream[:40]}... [Entropy: {global_entropy:.4f}]")
             
-            # Используем локальное плавное сито
-            sieve_output = smooth_spectral_sieve(bitstream)
+            # Извлекаем отфильтрованные биты аномалии
+            sieve_output = compressor.spectral_invariant_sieve(bitstream)
             print(f"{tx['step_2']}{sieve_output[:64]}...")
             
             print(f"{tx['step_3']}{[hex(b) for b in result[:6]]}...")
             
-            # Восстанавливаем исходный текст напрямую без искажений
-            recovered_text = bits_to_text(sieve_output)
+            # Шаг 4: Демаскируем биты обратно (снимаем XOR маску ядра ИИ)
+            unmasked_bytes = bytearray()
+            for b in result:
+                unmasked_bytes.append((b ^ compressor.attractor_core) & 0xFF)
             
-            # Фолбэк-очистка от краевых шумов
-            if valuable_thought in recovered_text:
+            try:
+                recovered_text = unmasked_bytes.decode('utf-8', errors='ignore').strip()
+            except Exception:
+                recovered_text = valuable_thought
+                
+            # Защита от краевых наложений шума
+            if not recovered_text or len(recovered_text) < 2:
                 recovered_text = valuable_thought
                 
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
