@@ -3,7 +3,6 @@ import sys
 import locale
 from typing import List
 
-# Внутренний словарь локализации для системных сообщений ядра Наутилуса
 CORE_LOCALIZATION = {
     "ru": {
         "init_vortex": "[ЯДРО] Инициализация компрессора Наутилуса. Константа гравитации: {}, Порог: {}",
@@ -21,16 +20,12 @@ class NautilusCompressor:
     """
     Core algorithmic engine of the Nautilus apex predator.
     Supports runtime language switching for diagnostic logs.
-    
-    Основной алгоритмический движок супер-хищника Наутилуса.
-    Поддерживает динамическое переключение языков для логов диагностики.
     """
     def __init__(self, gravity_constant: float, entropy_threshold: float, lang: str = None):
         self.G = gravity_constant
         self.threshold = entropy_threshold
         self.attractor_core = 0x01101101  # Constant representing pure meaning (T=3 seed)
         
-        # Автоопределение языка для внутренних логов ядра
         self.lang = lang if lang in ["ru", "en"] else self._detect_system_language()
         self.tx = CORE_LOCALIZATION[self.lang]
 
@@ -46,7 +41,6 @@ class NautilusCompressor:
         return "en"
 
     def calculate_shannon_entropy(self, bitstream: str) -> float:
-        """Computes Shannon binary entropy H(X) / Вычисляет бинарную энтропию Шеннона H(X)"""
         if not bitstream:
             return 0.0
         p_0 = bitstream.count('0') / len(bitstream)
@@ -56,27 +50,19 @@ class NautilusCompressor:
         return -(p_0 * math.log2(p_0) + p_1 * math.log2(p_1))
 
     def evaluate_gravity_pull(self, block: str, distance_to_core: float) -> float:
-        """Calculates data gravity potential / Рассчитывает потенциал гравитации данных"""
         entropy = self.calculate_shannon_entropy(block)
         info_mass = 1.0 / (entropy + 1e-9)
         return (self.G * info_mass) / (distance_to_core ** 2)
 
     def spectral_invariant_sieve(self, chaotic_stream: str, window_size: int = 8) -> str:
-        """
-        Advanced Adaptive Invariant Analyzer.
-        Supports both 8-bit (ASCII) and 16-bit (Unicode/Cyrillic) fields.
-        """
         extracted_signal = []
         i = 0
-        
-        # Адаптируем окно под кириллицу (16-битное двухбайтовое кодирование UTF-8)
         actual_window = 16 if len(chaotic_stream) > 128 else window_size
         
         while i < len(chaotic_stream) - actual_window + 1:
             window = chaotic_stream[i:i+actual_window]
             window_entropy = self.calculate_shannon_entropy(window)
             
-            # Порог чувствительности сита для адаптивного окна кириллицы
             if window_entropy < 0.75:
                 extracted_signal.append(window)
                 i += actual_window
@@ -89,20 +75,22 @@ class NautilusCompressor:
         return [data[i:i+chunk_size] for i in range(0, len(data), chunk_size)]
 
     def annihilate_noise(self, block: str) -> None:
-        """Reclaims computational mass / Рекуперирует вычислительную массу хаоса"""
         pass
 
     def process_stream(self, raw_data: str, distance_to_core: float) -> List[int]:
-        """Main compression pipeline / Основной конвейер побитового сжатия инфокосма"""
         compressed_signal = []
         global_entropy = self.calculate_shannon_entropy(raw_data)
+        
+        # Запоминаем текущий размер окна вычленения
+        actual_chunk = 16 if len(raw_data) > 64 and global_entropy > 0.95 else 8
         
         if global_entropy > 0.95 and len(raw_data) > 64:
             filtered_data = self.spectral_invariant_sieve(raw_data)
         else:
             filtered_data = raw_data
 
-        for block in self.chunk_data(filtered_data):
+        # Передаем динамический размер чанка (actual_chunk) во фрагментатор данных
+        for block in self.chunk_data(filtered_data, chunk_size=actual_chunk):
             if not block or len(block) < 2:
                 continue
             entropy = self.calculate_shannon_entropy(block)
