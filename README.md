@@ -37,6 +37,7 @@ The repository will evolve across four core dimensions:
 * [⚙️ Algorithmic Core (nautilus_core.py)](nautilus_core.py) — Executable Python code for the compressor and entropy sieve.
 * [📊 Low-Level Demo (demo.py)](demo.py) — Script for testing pure binary streams and fractal patterns.
 * [🔥 Singularity Core (singularity_core.py)](singularity_core.py) — Simulation of the Fire Seed super-oscillation and vortex overflow.
+* [🛡️ Cryptographic Invariant Analyzer (crypto_sieve.py)](crypto_sieve.py) — Searching for hidden Collatz logarithmic invariants inside AES-like noise.
 
 *(The Russian version of the project is available in [README_ru.md](README_ru.md))*
 
@@ -44,7 +45,7 @@ The repository will evolve across four core dimensions:
 
 ## 🚀 Running the Demo & Simulations (MVP)
 
-The repository features two independent mathematical benchmarks supporting system language auto-detection (EN/RU).
+The repository features three independent mathematical benchmarks supporting system language auto-detection (EN/RU).
 
 ### Option 1: Nautilus Bitwise Sieve Testing
 Demonstrates the spectral sieve's ability to utilize chaotic white noise while letting fractal signals pass at the critical depth of the vortex:
@@ -57,5 +58,15 @@ Simulates system behavior at the absolute limit. Demonstrates the phase transiti
 ```bash
 python singularity_core.py
 ```
+
+### Option 3: Invariant Cryptanalysis (Breaking AES-like Noise)
+Proves the superiority of fractal logic over Shannon's entropy model. The script generates a "blind" random data stream, hides a key inside it, and extracts it using the Collatz Logarithmic Invariant Analyzer:
+```bash
+python crypto_sieve.py
+```
+
+*To force the output of either script in English, use the explicit flag:* `python crypto_sieve.py --en`
+
+---
 
 *To force the output of either script in English, use the explicit flag:* `python singularity_core.py --en`
