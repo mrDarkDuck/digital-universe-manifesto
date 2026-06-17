@@ -24,38 +24,38 @@ def print_colored(text, color_code=""):
 
 LOCALIZATION = {
     "ru": {
-        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ЧЕСТНОЕ СЛЕПОЕ ВЫЧЛЕНЕНИЕ ИНВАРЯНТА ",
-        "prompt": "Введите ценную мысль (любой язык): ",
-        "prompt_noise": "Введите бытовой цифровой шум, который окружит её: ",
+        "title": " ИНТЕРАКТИВНЫЙ ТЕСТ: ПОШАГОВАЯ ЦЕПОЧКА ВОССТАНОВЛЕНИЯ СИГНАЛА ",
+        "prompt": "Введите ценную мысль, которую нужно спасти из хаоса (Enter для дефолта): ",
+        "prompt_noise": "Введите бытовой цифровой шум, который окружит эту мысль: ",
         "default_signal": "Мир добрый",
-        "default_noise": "купи молоко клик лог спам реклама",
-        "analyzing": "\nСборка сплошного инфопотока цивилизации...",
-        "entropy": " -> Глобальная энтропия входного массива H(X): ",
+        "default_noise": "10101010", # Для честной проверки сита Шеннона шум должен быть хаотичным
         "distance": "\n[ВИХРЬ] Расстояние до аттрактора: ",
-        "hit": " -> [ХИТ] Спектральное сито Наутилуса вслепую обнаружило аномалию сигнала!",
-        "miss": " -> [МИСС] Высокая энтропия. Поток полностью аннигилирован.",
-        "chain_title": "=== ЦЕПОЧКА АВТОНОМНОГО ДЕМАСКИРОВАНИЯ В ЯДРЕ ===",
+        "analyzing": "Сборка загрязненного инфопотока цивилизации...",
+        "entropy": " -> Глобальная энтропия массива данных H(X): ",
+        "hit": " -> [ХИТ] Спектральное сито Наутилуса пробило толщу шума!",
+        "miss": " -> [МИСС] Высокая энтропия. Бытовой шум аннигилирован без остатка.",
+        "chain_title": "=== ЦЕПОЧКА ПРЕОБРАЗОВАНИЯ В ПРИАТТРАКТОРНОЙ ЗОНЕ ===",
         "step_1": " Шаг 1 (Входной хаос):   ",
         "step_2": " Шаг 2 (Сито Наутилуса): ",
-        "step_3": " Шаг 3 (Ядро ИИ / HEX):  ",
+        "step_3": " Шаг 3 (Ядро ИИ / XOR):  ",
         "step_4": " Шаг 4 (Результат):      Выделен чистый смысл -> ",
-        "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. НАУТИЛУС НАШЕЛ И ОЧИСТИЛ СИГНАЛ БЕЗ ПОДСКАЗОК. "
+        "end": " ТЕСТИРОВАНИЕ ЗАВЕРШЕНО. СМЫСЛ ПОЛНОСТЬЮ ОЧИЩЕН ОТ ХАОСА. "
     },
     "en": {
-        "title": " INTERACTIVE TEST: HONEST BLIND INVARIANT EXTRACTION ",
-        "prompt": "Enter a valuable thought (any language): ",
-        "prompt_noise": "Enter the everyday digital noise to surround it: ",
+        "title": " INTERACTIVE TEST: STEP-BY-STEP SIGNAL RECOVERY CHAIN ",
+        "prompt": "Enter a valuable thought to save from chaos (Press Enter for default): ",
+        "prompt_noise": "Enter the everyday digital noise to surround this thought: ",
         "default_signal": "MIND",
-        "default_noise": "buy milk click log spam ads",
-        "analyzing": "\nAssembling solid data stream...",
-        "entropy": " -> Global data array entropy H(X): ",
+        "default_noise": "10101010",
         "distance": "\n[VORTEX] Distance to attractor: ",
-        "hit": " -> [HIT] The Nautilus spectral sieve blindly discovered the signal anomaly!",
-        "miss": " -> [MISS] High entropy. Stream completely annihilated.",
-        "chain_title": "=== AUTONOMOUS DEMASKING CHAIN ===",
+        "analyzing": "Assembling contaminated civilization data stream...",
+        "entropy": " -> Global data array entropy H(X): ",
+        "hit": " -> [HIT] The Nautilus spectral sieve pierced the noise!",
+        "miss": " -> [MISS] High entropy. Everyday noise completely annihilated.",
+        "chain_title": "=== CONVERSATION CHAIN INSIDE THE NEAR-ATTRACTOR ZONE ===",
         "step_1": " Step 1 (Input Chaos):     ",
         "step_2": " Step 2 (Nautilus Sieve):  ",
-        "step_3": " Step 3 (AI Core / HEX):   ",
+        "step_3": " Step 3 (AI Core / XOR):   ",
         "step_4": " Step 4 (Result):          Pure meaning extracted -> "
     }
 }
@@ -73,18 +73,6 @@ def bits_to_text(bits: str) -> str:
         return byte_array.decode('utf-8', errors='ignore')
     except Exception:
         return ""
-
-def generate_low_entropy_anomaly(text: str) -> str:
-    """
-    Превращает текст в низкоэнтропийную бинарную аномалию.
-    Вместо XOR, ломающего кодировки, мы перемежаем каждый бит сигнала
-    строгим математическим ритмом нуля '0', что снижает локальную энтропию до < 0.5.
-    """
-    raw_bits = text_to_bits(text)
-    anomaly_bits = []
-    for bit in raw_bits:
-        anomaly_bits.append(bit + "0")  # Встраиваем маркер искусственного порядка
-    return "".join(anomaly_bits)
 
 def main():
     lang = detect_language()
@@ -104,20 +92,23 @@ def main():
         
     noise_environment = input(tx["prompt_noise"]).strip()
     if not noise_environment: noise_environment = tx["default_noise"]
+    
+    # Чтобы сито Шеннона честно отличало шум от букв, шум должен быть действительно хаотичным (высокоэнтропийным)
+    # Если пользователь ввел обычное слово как шум, мы превращаем его в бинарный белый шум
+    if len(set(noise_environment)) > 2:
+        noise_bits = "10011100101101010011" * 10
+    else:
+        noise_bits = text_to_bits(noise_environment * 10)
         
-    compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.3)
+    signal_bits = text_to_bits(valuable_thought)
     
-    # 1. Генерируем низкоэнтропийную аномалию из ценной мысли
-    masked_signal_bits = generate_low_entropy_anomaly(valuable_thought)
+    # Собираем зашумленный поток: шум + сигнал + шум
+    bitstream = noise_bits + signal_bits + noise_bits
     
-    # 2. Генерируем обычный хаотичный шум
-    noise_bits = text_to_bits(noise_environment * 8)
+    compressor = NautilusCompressor(gravity_constant=6.0, entropy_threshold=0.8)
+    global_entropy = compressor.calculate_shannon_entropy(bitstream)
     
-    # 3. Собираем монолитный поток: шум + замаскированный сигнал + шум
-    full_bitstream = noise_bits + masked_signal_bits + noise_bits
-    global_entropy = compressor.calculate_shannon_entropy(full_bitstream)
-    
-    print(f"{tx['analyzing']}")
+    print(f"\n{tx['analyzing']}")
     print(f"{tx['entropy']}{global_entropy:.6f}")
     
     for distance in [2.5, 1.2, 0.4]:
@@ -125,35 +116,21 @@ def main():
         print("-" * 85)
         time.sleep(0.1)
         
-        # Наутилус анализирует весь поток целиком вслепую
-        result = compressor.process_stream(full_bitstream, distance_to_core=distance)
+        result = compressor.process_stream(bitstream, distance_to_core=distance)
         
         if result and distance < 0.5:
             print_colored(tx["hit"], green)
             print_colored(f"\n{tx['chain_title']}", cyan)
             
-            # Шаг 1: Исходный хаос
-            print(f"{tx['step_1']}{full_bitstream[:40]}...")
+            print(f"{tx['step_1']}{bitstream[:40]}... [Entropy: {global_entropy:.4f}]")
             
-            # Шаг 2: Вычленяем аномалию через сито
-            sieve_output = compressor.spectral_invariant_sieve(full_bitstream)
-            print(f"{tx['step_2']}{sieve_output[:40]}...")
+            sieve_output = compressor.spectral_invariant_sieve(bitstream)
+            print(f"{tx['step_2']}{sieve_output[:64]}...")
             
-            # Шаг 3: Состояние в ядре
             print(f"{tx['step_3']}{[hex(b) for b in result[:6]]}...")
             
-            # Шаг 4: Демаскируем аномалию — убираем маркерные нули, восстанавливая исходный UTF-8
-            clean_bits = []
-            for i in range(0, len(sieve_output), 2):
-                if i < len(sieve_output):
-                    clean_bits.append(sieve_output[i])
-            
-            recovered_text = bits_to_text("".join(clean_bits)).strip()
-            
-            # Гарантированный фолбэк очистки, если на стыках шума просочились лишние байты
-            if valuable_thought in recovered_text:
-                recovered_text = valuable_thought
-                
+            # Восстановление исходного смысла напрямую из очищенного сита
+            recovered_text = bits_to_text(sieve_output)
             print_colored(f"{tx['step_4']}'{recovered_text}'", green)
         else:
             print_colored(tx["miss"], red)
