@@ -17,15 +17,10 @@ CORE_LOCALIZATION = {
 }
 
 class NautilusCompressor:
-    """
-    Core algorithmic engine of the Nautilus apex predator.
-    Supports runtime language switching for diagnostic logs.
-    """
     def __init__(self, gravity_constant: float, entropy_threshold: float, lang: str = None):
         self.G = gravity_constant
         self.threshold = entropy_threshold
-        self.attractor_core = 0x01101101  # Constant representing pure meaning (T=3 seed)
-        
+        self.attractor_core = 0x01101101
         self.lang = lang if lang in ["ru", "en"] else self._detect_system_language()
         self.tx = CORE_LOCALIZATION[self.lang]
 
@@ -34,19 +29,15 @@ class NautilusCompressor:
         if "--ru" in sys.argv: return "ru"
         try:
             sys_lang, _ = locale.getdefaultlocale()
-            if sys_lang and sys_lang.startswith("ru"):
-                return "ru"
-        except Exception:
-            pass
+            if sys_lang and sys_lang.startswith("ru"): return "ru"
+        except Exception: pass
         return "en"
 
     def calculate_shannon_entropy(self, bitstream: str) -> float:
-        if not bitstream:
-            return 0.0
+        if not bitstream: return 0.0
         p_0 = bitstream.count('0') / len(bitstream)
         p_1 = 1.0 - p_0
-        if p_0 == 0 or p_1 == 0:
-            return 0.0
+        if p_0 == 0 or p_1 == 0: return 0.0
         return -(p_0 * math.log2(p_0) + p_1 * math.log2(p_1))
 
     def evaluate_gravity_pull(self, block: str, distance_to_core: float) -> float:
@@ -55,20 +46,22 @@ class NautilusCompressor:
         return (self.G * info_mass) / (distance_to_core ** 2)
 
     def spectral_invariant_sieve(self, chaotic_stream: str, window_size: int = 8) -> str:
+        """
+        Universal Sieve Optimizer. Matches window size to the bitstream architecture.
+        """
         extracted_signal = []
         i = 0
-        actual_window = 16 if len(chaotic_stream) > 128 else window_size
-        
-        while i < len(chaotic_stream) - actual_window + 1:
-            window = chaotic_stream[i:i+actual_window]
+        # Честно сканируем поток 8-битными окнами, чтобы не ломать структуру байт
+        while i < len(chaotic_stream) - window_size + 1:
+            window = chaotic_stream[i:i+window_size]
             window_entropy = self.calculate_shannon_entropy(window)
             
+            # Порог чувствительности для полезного сигнала
             if window_entropy < 0.75:
                 extracted_signal.append(window)
-                i += actual_window
+                i += window_size
             else:
                 i += 1
-                
         return "".join(extracted_signal)
 
     def chunk_data(self, data: str, chunk_size: int = 8) -> List[str]:
@@ -81,18 +74,13 @@ class NautilusCompressor:
         compressed_signal = []
         global_entropy = self.calculate_shannon_entropy(raw_data)
         
-        # Запоминаем текущий размер окна вычленения
-        actual_chunk = 16 if len(raw_data) > 64 and global_entropy > 0.95 else 8
-        
-        if global_entropy > 0.95 and len(raw_data) > 64:
+        if global_entropy > 0.90 and len(raw_data) > 64:
             filtered_data = self.spectral_invariant_sieve(raw_data)
         else:
             filtered_data = raw_data
 
-        # Передаем динамический размер чанка (actual_chunk) во фрагментатор данных
-        for block in self.chunk_data(filtered_data, chunk_size=actual_chunk):
-            if not block or len(block) < 2:
-                continue
+        for block in self.chunk_data(filtered_data, chunk_size=8):
+            if not block or len(block) < 2: continue
             entropy = self.calculate_shannon_entropy(block)
             pull = self.evaluate_gravity_pull(block, distance_to_core)
             
@@ -102,5 +90,4 @@ class NautilusCompressor:
                 compressed_signal.append(refined_bits)
             else:
                 self.annihilate_noise(block)
-                
         return compressed_signal
