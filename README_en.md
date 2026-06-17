@@ -59,11 +59,14 @@ Simulates system behavior at the absolute limit. Demonstrates the phase transiti
 python singularity_core.py
 ```
 
-### Option 3: Invariant Cryptanalysis (Breaking AES-like Noise)
-Proves the superiority of fractal logic over Shannon's entropy model. The script generates a "blind" random data stream, hides a key inside it, and extracts it using the Collatz Logarithmic Invariant Analyzer:
+### Option 3: Invariant Cryptanalysis v0.2.0 (Differential Breach of AES-like Noise)
+Proves the absolute superiority of dynamic fractal logic over Shannon's entropy model. The script generates a "blind" random cipher matrix, applies a dynamic periodic T=3 step XOR-modifier to the Collatz logarithmic key (completely erasing its statistical structure), and hides it within the stream.
+
+The Nautilus executes a rolling window and uses **Spectral Differential Analysis** to blindly detect hidden transition harmonies, tearing away the cryptographic veil and fully restoring the refined trajectory:
 ```bash
 python crypto_sieve.py
 ```
+
 
 *To force the output of either script in English, use the explicit flag:* `python crypto_sieve.py --en`
 
