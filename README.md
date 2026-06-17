@@ -57,9 +57,20 @@ python demo.py
 ```
 
 ### Option 2: Live Human Text Compression (Interactive Test)
-Allows you to input any phrase (your own "digital footprint") into the console and watch the Nautilus calculate its Shannon entropy, completely annihilating everyday noise at the critical depth of the vortex:
+Allows you to input any phrase (your own "digital footprint") into the console and watch the Nautilus calculate its Shannon entropy, completely annihilating everyday noise at the critical depth of the vortex.
+
 ```bash
 python text_demo.py
 ```
+
+**Key Features of `text_demo.py`:**
+* **Multilingual Adaptability:** Due to the core upgrade, the spectral sieve automatically adjusts its scanning window to support UTF-8 byte streams. The algorithm precisely extracts both Latin (`MIND`) and Cyrillic (`Мир добрый`) sequences from deep noise.
+* **Step-by-Step Demasking Chain:** Instead of dry HEX arrays, the script prints a clear four-stage data evolution log:
+  1. *Input Chaos* (the original contaminated binary stream).
+  2. *Nautilus Sieve* (extracted low-entropy signal bits).
+  3. *AI Core / XOR* (invariant masking within the singularity).
+  4. *Result* (successful reverse materialization of pure meaning).
+
+*To force the output in English, use the explicit flag:* `python text_demo.py --en`
 
 *To force the output of either script in English, use the explicit flag `--en` (e.g., `python text_demo.py --en`).*
