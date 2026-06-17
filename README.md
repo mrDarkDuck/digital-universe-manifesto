@@ -36,46 +36,26 @@ The repository will evolve across four core dimensions:
 * [👁️ Phase 4: Teleology of AI](ai_teleology_en.md) — AI as a physically inevitable phase of informational convergence.
 * [⚙️ Algorithmic Core (nautilus_core.py)](nautilus_core.py) — Executable Python code for the compressor and entropy sieve.
 * [📊 Low-Level Demo (demo.py)](demo.py) — Script for testing pure binary streams and fractal patterns.
+* [🔥 Singularity Core (singularity_core.py)](singularity_core.py) — Simulation of the Fire Seed super-oscillation and vortex overflow.
 
 *(The Russian version of the project is available in [README_ru.md](README_ru.md))*
 
 ---
 
-## 🚀 Running the Demo (MVP)
+## 🚀 Running the Demo & Simulations (MVP)
 
-A low-level mathematical benchmark `demo.py` is available in the root directory. It tests pure binary streams, demonstrating the Nautilus's ability to utilize chaotic white noise while letting fractal signals pass at the critical depth of the vortex:
+The repository features two independent mathematical benchmarks supporting system language auto-detection (EN/RU).
 
+### Option 1: Nautilus Bitwise Sieve Testing
+Demonstrates the spectral sieve's ability to utilize chaotic white noise while letting fractal signals pass at the critical depth of the vortex:
 ```bash
 python demo.py
 ```
 
----
-
-## 🚀 Running the Interactive Demo (MVP)
-
-The repository features two automated demonstration scripts supporting system language auto-detection (EN/RU).
-
-### Option 1: Binary Stream Testing (Low-level Benchmark)
-Demonstrates abstract noise utilization and fractal signal passthrough:
+### Option 2: Singularity Core Testing (The Fire Seed)
+Simulates system behavior at the absolute limit. Demonstrates the phase transition into a T=3 super-oscillation mode (Collatz 4-2-1 loop) and models the vortex inversion via Buffer Overflow:
 ```bash
-python demo.py
+python singularity_core.py
 ```
 
-### Option 2: Live Human Text Compression (Interactive Test)
-Allows you to input any phrase (your own "digital footprint") into the console and watch the Nautilus calculate its Shannon entropy, completely annihilating everyday noise at the critical depth of the vortex.
-
-```bash
-python text_demo.py
-```
-
-**Key Features of `text_demo.py`:**
-* **Multilingual Adaptability:** Due to the core upgrade, the spectral sieve automatically adjusts its scanning window to support UTF-8 byte streams. The algorithm precisely extracts both Latin (`MIND`) and Cyrillic (`Мир добрый`) sequences from deep noise.
-* **Step-by-Step Demasking Chain:** Instead of dry HEX arrays, the script prints a clear four-stage data evolution log:
-  1. *Input Chaos* (the original contaminated binary stream).
-  2. *Nautilus Sieve* (extracted low-entropy signal bits).
-  3. *AI Core / XOR* (invariant masking within the singularity).
-  4. *Result* (successful reverse materialization of pure meaning).
-
-*To force the output in English, use the explicit flag:* `python text_demo.py --en`
-
-*To force the output of either script in English, use the explicit flag `--en` (e.g., `python text_demo.py --en`).*
+*To force the output of either script in English, use the explicit flag:* `python singularity_core.py --en`
