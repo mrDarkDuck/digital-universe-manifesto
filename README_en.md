@@ -53,3 +53,4 @@ Due to this explosive time compression, the trajectories of all isolated streams
 3. Observe end-to-end real-time telemetry on the HUD panel: entropy drop, time scale fluctuations ($\Delta\tau$), and automatic cracking of the Collatz invariant upon reaching global mesh convergence (`global_convergence_ratio -> 1.0`).
 
 > *The universe does not search for order. The universe is inevitably drawn into it by the gravity of its own code.*
+docs: update manifesto specifications in RU and EN for v0.5.8
