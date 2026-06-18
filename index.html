@@ -544,6 +544,70 @@ socket.onmessage = function(event) {
 socket.onerror = function(error) {
     console.error(`[Nautilus UI] Ошибка канала связи: ${error.message}`);
 };
+// ============================================================================
+// PHASE V INTEGRATION: MULTIVERSE SOCKET CONTEXT (PART 1)
+// ============================================================================
+const socket = new WebSocket("ws://localhost:8765");
+
+socket.onopen = function(e) {
+    console.log("[Nautilus UI] Канал Мультивселенной Фазы V успешно активирован.");
+    
+    // Каждые 100мс стримим текущие физические параметры изометрии конуса на бэкенд.
+    // Идентификатор 'mrdarkduck_node_V5' инициирует многомерный процессинг в ядре.
+    setInterval(() => {
+        if (socket.readyState === WebSocket.OPEN) {
+            const syncPacket = {
+                id: "mrdarkduck_node_V5",
+                gravity: config.gravity,
+                distance: config.distance
+            };
+            socket.send(JSON.stringify(syncPacket));
+        }
+    }, 100);
+};
+
+socket.onerror = function(error) {
+    console.error(`[Nautilus UI] Ошибка многомерного канала связи: ${error.message}`);
+};
+socket.onmessage = function(event) {
+    // Десериализуем входящий многомерный репорт из nautilus_core.py
+    const coreReport = JSON.parse(event.data);
+    
+    // Получаем доступ к интерфейсным элементам лог-панели
+    const epochElement = document.getElementById("hud-epoch");
+    const entropyElement = document.getElementById("hud-entropy");
+    const sieveElement = document.getElementById("hud-sieve");
+
+    // 1. Отображаем текущую футурологическую эпоху конуса
+    if (epochElement) {
+        epochElement.innerText = coreReport.meta.type;
+    }
+    
+    // 2. Выводим рассчитанную Шенноновскую энтропию
+    if (entropyElement) {
+        entropyElement.innerText = coreReport.physics.shannon_entropy.toFixed(4);
+    }
+    
+    // 3. ТОЧКА СКЛЕЙКИ ФАЗЫ V: Парсинг многомерного побитового сита и T-фактора
+    if (sieveElement) {
+        const sieveData = coreReport.crypto_sieve_v5;
+        const dimName = coreReport.meta.multiverse_dimension; // Измерение T_3, T_5 или T_7
+        const netRatio = coreReport.network.global_convergence_ratio; // Коэффициент сети
+        
+        if (sieveData.sieve_cracked) {
+            // Если Огненное Семя альтернативного мира вскрыто — выводим его квантовый ключ
+            sieveElement.innerHTML = `<span style="color: #f1c40f;">DIM: ${dimName} [CRACKED]</span><br>` + 
+                                     `SEED: ${sieveData.extracted_multiverse_seed.join("-")} (NET: ${netRatio})`;
+        } else {
+            // Если идет процесс фильтрации — показываем активный T-фактор и интенсивность сита
+            sieveElement.innerHTML = `<span style="color: #00f3ff;">DIM: ${dimName} [SCAN]</span><br>` + 
+                                     `STEPS: ${sieveData.intensity_steps} (NET: ${netRatio})`;
+        }
+    }
+};
+// ============================================================================
+// END OF PHASE V INTEGRATION BLOCK
+// ============================================================================
 
 </script>
 </body>
