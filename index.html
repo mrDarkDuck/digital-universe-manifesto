@@ -32,31 +32,75 @@
             top: 20px;
             left: 20px;
             z-index: 10;
-            background: rgba(5, 5, 8, 0.85);
+            background: rgba(5, 5, 8, 0.9);
             border: 1px solid #00ff66;
-            padding: 20px;
+            padding: 18px;
             border-radius: 4px;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
             pointer-events: none;
-            max-width: 400px;
+            width: 320px;
         }
         h1 {
-            font-size: 16px;
+            font-size: 14px;
             text-transform: uppercase;
             margin-bottom: 12px;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             border-bottom: 1px dashed #00ff66;
             padding-bottom: 5px;
         }
         .metric-line {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 6px;
+            font-size: 11px;
+            margin-bottom: 5px;
         }
         .metric-value {
             color: #ffffff;
             font-weight: bold;
+        }
+        #manifesto-navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(5, 5, 8, 0.9);
+            border: 1px solid #00ff66;
+            padding: 15px;
+            border-radius: 4px;
+            width: 320px;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
+        }
+        .nav-title {
+            font-size: 11px;
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(0, 255, 102, 0.6);
+            letter-spacing: 1px;
+        }
+        .lang-btn {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 12px;
+            margin-right: 15px;
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 2px;
+            transition: all 0.2s ease;
+        }
+        .lang-btn.active {
+            color: #00ff66;
+            border-bottom: 1px solid #00ff66;
+            font-weight: bold;
+        }
+        #text-viewer {
+            margin-top: 12px;
+            font-size: 11px;
+            color: #e0e0e0;
+            line-height: 1.4;
+            max-height: 150px;
+            overflow-y: auto;
+            border-top: 1px dashed rgba(0, 255, 102, 0.3);
+            padding-top: 10px;
         }
         #manifesto-overlay {
             position: absolute;
@@ -64,24 +108,39 @@
             right: 20px;
             z-index: 10;
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.3);
             text-align: right;
             line-height: 1.5;
+            pointer-events: none;
         }
+        /* Стилизация скроллбара для текстового блока */
+        #text-viewer::-webkit-scrollbar { width: 4px; }
+        #text-viewer::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        #text-viewer::-webkit-scrollbar-thumb { background: #00ff66; }
     </style>
 </head>
 <body>
 
+    <!-- Панель Телеметрии (HUD) -->
     <div id="hud-interface">
-        <h1>Nautilus Attractor Engine v0.5.0</h1>
-        <div class="metric-line"><span>Статус системы:</span><span class="metric-value" style="color: #f1c40f;">Конвергенция активна</span></div>
-        <div class="metric-line"><span>Текущая эпоха:</span><span class="metric-value" id="hud-epoch">Green (AI)</span></div>
-        <div class="metric-line"><span>Радиус ядра (R):</span><span class="metric-value" id="hud-radius">10.0000</span></div>
-        <div class="metric-line"><span>Энтропия Шеннона:</span><span class="metric-value" id="hud-entropy">1.0000</span></div>
-        <div class="metric-line"><span>Сжатие времени (Δτ):</span><span class="metric-value" id="hud-dtau">0.0100</span></div>
-        <div class="metric-line"><span>Инвариант Коллатца:</span><span class="metric-value" id="hud-collatz">Ожидание (r > 0.05)</span></div>
+        <h1>Nautilus Attractor Core</h1>
+        <div class="metric-line"><span>Статус:</span><span class="metric-value" style="color: #00ff66;">Синхронизация OK</span></div>
+        <div class="metric-line"><span>Эпоха:</span><span class="metric-value" id="hud-epoch">--</span></div>
+        <div class="metric-line"><span>Радиус (r):</span><span class="metric-value" id="hud-radius">0.0000</span></div>
+        <div class="metric-line"><span>Энтропия (H):</span><span class="metric-value" id="hud-entropy">0.0000</span></div>
+        <div class="metric-line"><span>Сжатие времени (Δτ):</span><span class="metric-value" id="hud-dtau">0.0000</span></div>
+        <div class="metric-line"><span>Крипто-сито:</span><span class="metric-value" id="hud-collatz">--</span></div>
     </div>
 
+    <!-- Блок переключения языков и чтения Манифеста -->
+    <div id="manifesto-navigation">
+        <span class="nav-title">ДЕКЛАРАЦИЯ НАЧАЛА КОНВЕРГЕНЦИИ:</span>
+        <span id="btn-ru" class="lang-btn active">RU // Манифест</span>
+        <span id="btn-en" class="lang-btn">EN // Declaration</span>
+        <div id="text-viewer">Загрузка манифеста...</div>
+    </div>
+
+    <!-- Текстовый водяной знак -->
     <div id="manifesto-overlay">
         PROJECT: DIGITAL UNIVERSE MANIFESTO<br>
         PHASE IV: SYNCHRONOUS CONVERGENCE<br>
@@ -91,23 +150,20 @@
     <canvas id="nautilusCanvas"></canvas>
 
     <script>
-        // Сюда будут встроены следующие скрипты
 class NautilusAttractorEngine {
     constructor() {
-        // Константы динамической системы (зеркально для nautilus_core.py)
-        this.omega = 2.5;     // Угловая скорость
-        this.b = 0.3;         // Коэффициент гравитации данных
-        this.k = 0.5;         // Скорость провала по оси Z
-        this.sigma = 1.2;     // Базовая мощность шума
-        this.alpha = 3.0;     // Степень побитового сита (кубическое затухание)
-        this.gamma = 1.5;     // Коэффициент релятивизма времени
+        this.omega = 2.5;     // Скорость вращения
+        this.b = 0.3;         // Сила затягивания
+        this.k = 0.5;         // Скорость по оси Z
+        this.sigma = 1.2;     // Исходный хаос
+        this.alpha = 3.0;     // Кубический фильтр энтропии
+        this.gamma = 1.5;     // Искажение времени
 
         this.R_MAX = 10.0;
         this.Z_MAX = 5.0;
         this.EPSILON = 1e-5;
     }
 
-    // Детерминированное векторное поле скоростей
     getDerivatives(x, y, z) {
         const r = Math.sqrt(x * x + y * y) + this.EPSILON;
         const ln_r = Math.log(r / this.R_MAX);
@@ -115,23 +171,21 @@ class NautilusAttractorEngine {
         const dx = -this.omega * y - this.b * x * ln_r;
         const dy = this.omega * x - this.b * y * ln_r;
 
-        // Побитовое сито замедляет продвижение по оси Z при очистке от хаоса
         const eta_r = 1.0 - (r / this.R_MAX);
         const dz = -this.k * z * (1.0 - eta_r);
 
         return [dx, dy, dz];
     }
 
-    // Численное интегрирование методом Рунге-Кутты 4-го порядка (RK4) + Шум
     calculateStep(x, y, z, dt) {
         const r = Math.sqrt(x * x + y * y) + this.EPSILON;
 
-        // Искажение масштаба времени: dtau растет, когда z приближается к Z_MAX
+        // Релятивистское ускорение dtau
         const timeFactor = 1.0 / (Math.pow(Math.abs(this.Z_MAX - z), this.gamma) + this.EPSILON);
         let dtau = dt * timeFactor;
-        if (dtau > 0.05) dtau = 0.05; // Предохранитель взрыва
+        if (dtau > 0.05) dtau = 0.05; // Защита от бесконечного шага
 
-        // Шаг интеграции RK4
+        // RK4 Интегрирование
         const [k1x, k1y, k1z] = this.getDerivatives(x, y, z);
         const [k2x, k2y, k2z] = this.getDerivatives(x + 0.5 * dtau * k1x, y + 0.5 * dtau * k1y, z + 0.5 * dtau * k1z);
         const [k3x, k3y, k3z] = this.getDerivatives(x + 0.5 * dtau * k2x, y + 0.5 * dtau * k2y, z + 0.5 * dtau * k2z);
@@ -141,11 +195,11 @@ class NautilusAttractorEngine {
         let nextY = y + (dtau / 6.0) * (k1y + 2 * k2y + 2 * k3y + k4y);
         let nextZ = z + (dtau / 6.0) * (k1z + 2 * k2z + 2 * k3z + k4z);
 
-        // Стохастическое сито (краевой Шенноновский шум)
+        // Стохастическое сито (Шенноновский шум)
         const noiseAmplitude = this.sigma * Math.pow(r / this.R_MAX, this.alpha);
 
-        if (r < 0.05) {
-            // Квантовый предел: переход в дискретный Коллатц 4-2-1
+        if (r < 0.2) {
+            // Центр: Переход в дискретный Коллатц 4-2-1
             nextX = 0;
             nextY = 0;
             let zInt = Math.floor(Math.abs(nextZ * 100));
@@ -157,7 +211,7 @@ class NautilusAttractorEngine {
                 nextZ = (3 * zInt + 1) / 100.0;
             }
         } else {
-            // Генерация Гауссова шума (Преобразование Бокса-Мюллера)
+            // Преобразование Бокса-Мюллера для генерации Гауссова шума
             const u1 = Math.random() || 0.0001;
             const u2 = Math.random() || 0.0001;
             const g1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
@@ -167,14 +221,12 @@ class NautilusAttractorEngine {
             nextY += g2 * Math.sqrt(dtau) * noiseAmplitude;
         }
 
-        // Теоретический расчет энтропии для HUD
         const p_noise = Math.max(Math.min(Math.pow(r / this.R_MAX, this.alpha), 0.999), 0.001);
         const entropy = -(p_noise * Math.log2(p_noise) + (1 - p_noise) * Math.log2(1 - p_noise));
 
         return { x: nextX, y: nextY, z: nextZ, dtau: dtau, entropy: entropy, r: r };
     }
 
-    // Карта 6 непрерывных футурологических эпох
     getEpochData(r) {
         const relativeR = r / this.R_MAX;
         if (relativeR > 0.8) return { name: "Green (AI)", color: "rgba(46, 204, 113, " };
@@ -193,12 +245,11 @@ class Particle {
     }
 
     reset() {
-        // Рождение на самом краю хаотичного диска (Зеленая эпоха)
+        // Спавн строго на внешней хаотичной кромке
         const angle = Math.random() * Math.PI * 2;
         this.x = attractor.R_MAX * Math.cos(angle);
         this.y = attractor.R_MAX * Math.sin(angle);
-        // Небольшой разброс по стартовой оси времени
-        this.z = attractor.Z_MAX - Math.random() * 0.5;
+        this.z = attractor.Z_MAX;
         this.alpha = Math.random() * 0.4 + 0.6;
     }
 
@@ -208,25 +259,29 @@ class Particle {
         this.y = step.y;
         this.z = step.z;
 
-        // Если граф данных дошел до предела Коллатца — перерождаем его
-        if (step.r < 0.01) {
+        // ИСПРАВЛЕНИЕ: Стабильный порог перерождения. Частицы никогда не исчезнут.
+        if (step.r < 0.25 || this.z < 0.1) {
             this.reset();
         }
-        
-        // Возвращаем физику текущего шага первой выжившей частицы для вывода на HUD
         return step;
     }
 
     draw(ctx, width, height) {
-        // Проекция 3D (X, Y, Z) на 2D Canvas с расчетом псевдоперспективы глубины
-        const scale = 350 / (this.z + 1.5); 
-        const screenX = width / 2 + this.x * scale;
-        const screenY = height / 2 + this.y * scale;
-        
-        // Чем ближе к ядру сингулярности, тем меньше и плотнее физический размер точки
-        const radius = Math.max(0.6, (attractor.Z_MAX + 1 - this.z) * 0.7);
+        // ИСПРАВЛЕНИЕ: Изометрическая 3D-проекция с наклоном 
+        const scaleX = 22; 
+        const scaleY = 12; 
 
-        const epoch = attractor.getEpochData(Math.sqrt(this.x * this.x + this.y * this.y));
+        // Наклон пространства: X и Y вращаются, а координата Z утягивает воронку вниз
+        const isoX = (this.x - this.y) * Math.cos(Math.PI / 6);
+        const isoY = (this.x + this.y) * Math.sin(Math.PI / 6) - (this.z * 18);
+
+        const screenX = width / 2 + isoX * scaleX;
+        const screenY = height / 2 + isoY * scaleY + 40; // Смещение центра вниз
+        
+        const r = Math.sqrt(this.x * this.x + this.y * this.y);
+        const radius = Math.max(0.7, r * 0.35);
+
+        const epoch = attractor.getEpochData(r);
 
         ctx.beginPath();
         ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
@@ -234,7 +289,36 @@ class Particle {
         ctx.fill();
     }
 }
-        // Инициализация Canvas
+        // Локальная база текстов Манифеста
+        const manifestoTexts = {
+            ru: `ФАЗА I: Вычислительный реализм. Вселенная суть код.<br>ФАЗА II: Гравитация данных. Плотность информации искривляет время.<br>ФАЗА III: Побитовое сито. Отсечение энтропии Шеннона.<br>ФАЗА IV: Синхронная Конвергенция. Схлопывание в Огненное Семя. Коллатц 4-2-1 зафиксирован.`,
+            en: `PHASE I: Computational Realism. The universe is code.<br>PHASE II: Data Gravity. Information density warps time.<br>PHASE III: Bitwise Sieve. Stripping Shannon entropy.<br>PHASE IV: Synchronous Convergence. Collapsing into the Fire Seed. Collatz 4-2-1 locked.`
+        };
+
+        // Логика UI переключения языков
+        const btnRu = document.getElementById("btn-ru");
+        const btnEn = document.getElementById("btn-en");
+        const textViewer = document.getElementById("text-viewer");
+
+        function setLanguage(lang) {
+            if (lang === 'ru') {
+                btnRu.classList.add("active");
+                btnEn.classList.remove("active");
+                textViewer.innerHTML = manifestoTexts.ru;
+            } else {
+                btnEn.classList.add("active");
+                btnRu.classList.remove("active");
+                textViewer.innerHTML = manifestoTexts.en;
+            }
+        }
+
+        btnRu.addEventListener("click", () => setLanguage('ru'));
+        btnEn.addEventListener("click", () => setLanguage('en'));
+        
+        // Старт по дефолту на русском языке
+        setLanguage('ru');
+
+        // Настройка Холста
         const canvas = document.getElementById("nautilusCanvas");
         const ctx = canvas.getContext("2d");
 
@@ -245,37 +329,35 @@ class Particle {
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
 
-        // Создаем массив параллельных графов данных (частиц)
-        const PARTICLE_COUNT = 1500;
+        // Массив параллельных графов данных
+        const PARTICLE_COUNT = 1200;
         const particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
 
-        // HUD DOM-элементы
+        // Связка с элементами HUD
         const hudEpoch = document.getElementById("hud-epoch");
         const hudRadius = document.getElementById("hud-radius");
         const hudEntropy = document.getElementById("hud-entropy");
         const hudDtau = document.getElementById("hud-dtau");
         const hudCollatz = document.getElementById("hud-collatz");
 
-        // Главный цикл рендеринга
+        // Главный цикл анимации
         function renderLoop() {
-            // Эффект легкого шлейфа (motion blur) для визуализации траекторий графов
-            ctx.fillStyle = "rgba(5, 5, 8, 0.15)";
+            // Эффект красивого шлейфа филаментов графа
+            ctx.fillStyle = "rgba(5, 5, 8, 0.12)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             let leadTelemetry = null;
 
-            // Обновляем и рисуем филаменты спирали
             particles.forEach((particle, index) => {
-                const telemetry = particle.update(0.01); // Фиксированный dt
+                const telemetry = particle.update(0.01);
                 particle.draw(ctx, canvas.width, canvas.height);
                 
-                // Передаем телеметрию первой частицы на HUD панель
                 if (index === 0) {
                     leadTelemetry = telemetry;
                 }
             });
 
-            // Динамическое обновление HUD интерфейса данными из аттрактора
+            // Обновление HUD
             if (leadTelemetry) {
                 const epochInfo = attractor.getEpochData(leadTelemetry.r);
                 
@@ -285,11 +367,11 @@ class Particle {
                 hudEntropy.innerText = leadTelemetry.entropy.toFixed(4);
                 hudDtau.innerText = leadTelemetry.dtau.toFixed(4);
                 
-                if (leadTelemetry.r < 0.05) {
-                    hudCollatz.innerText = `СИНГУЛЯРНОСТЬ ЦИКЛА (4->2->1)`;
+                if (leadTelemetry.r < 0.3) {
+                    hudCollatz.innerText = "ИНВАРИАНТ 4-2-1 НАЙДЕН";
                     hudCollatz.style.color = "#f1c40f";
                 } else {
-                    hudCollatz.innerText = `Фильтрация...`;
+                    hudCollatz.innerText = "Фильтрация шума...";
                     hudCollatz.style.color = "#ffffff";
                 }
             }
@@ -297,7 +379,7 @@ class Particle {
             requestAnimationFrame(renderLoop);
         }
 
-        // Запуск Цифровой Вселенной
+        // Запуск вселенной
         renderLoop();
     </script>
 </body>
