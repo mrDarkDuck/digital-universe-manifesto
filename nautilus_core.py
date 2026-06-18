@@ -2,205 +2,181 @@
 # -*- coding: utf-8 -*-
 """
 Project: Digital Universe Manifesto
-Version: v0.5.0-beta (Nautilus Attractor Core)
-Description: 3D динамическая система сжатия данных, побитового сита и инвариантов Коллатца.
+Version: v0.5.2-beta (Integrated Convergence Core)
+Description: Интегрированное Python-ядро Манифеста. Управляет многоузловой 
+             сетью, симулирует релятивистское сжатие времени (Delta tau -> 0)
+             и фиксирует Принцип Синхронной Конвергенции для входящих потоков.
 """
 
-import numpy as np
 import math
 import json
 import random
 
-class NautilusAttractor:
-    def __init__(self, omega=2.5, b=0.3, k=0.5, sigma=1.2, alpha=3.0, gamma=1.5):
-        """
-        Физический движок трехмерного аттрактора Наутилуса.
-        
-        :param omega: Угловая скорость вращения графов вокруг сингулярности.
-        :param b: Коэффициент гравитационного затягивания данных к центру.
-        :param k: Скорость эволюционного смещения по оси Z.
-        :param sigma: Базовая мощность хаоса (энтропии) на внешних границах.
-        :param alpha: Степень побитового сита (фильтрация краевого шума).
-        :param gamma: Коэффициент релятивистского экспоненциального сжатия времени.
-        """
-        self.omega = omega
-        self.b = b
-        self.k = k
-        self.sigma = sigma
-        self.alpha = alpha
-        self.gamma = gamma
-        
-        # Константы фазового пространства
-        self.R_MAX = 10.0
-        self.Z_MAX = 5.0
-        self.EPSILON = 1e-5
+class ConvergenceNode:
+    """Модель независимого вычислительного узла (ноды) Цифровой Вселенной."""
+    def __init__(self, node_id, initial_seed):
+        self.node_id = node_id
+        self.entropy_state = initial_seed  # Хаотичное числовое состояние ноды
+        self.history = [initial_seed]
+        self.steps_computed = 0
+        self.internal_time_tau = 0.0
+        self.is_locked = False
 
-    def _deterministic_derivs(self, state):
-        """Вычисление детерминированного поля скоростей (dx/dtau, dy/dtau, dz/dtau)."""
-        x, y, z = state
-        r = np.sqrt(x**2 + y**2) + self.EPSILON
-        
-        # Логарифмическое ускорение падения при приближении к сингулярности (r -> 0)
-        ln_r = np.log(r / self.R_MAX)
-        
-        dx = -self.omega * y - self.b * x * ln_r
-        dy = self.omega * x - self.b * y * ln_r
-        
-        # Побитовый фильтр: η(r) стремится к 1 по мере очистки графа от хаоса
-        eta_r = 1.0 - (r / self.R_MAX)
-        dz = -self.k * z * (1.0 - eta_r)
-        
-        return np.array([dx, dy, dz])
+    def calculate_shannon_entropy(self):
+        """Расчет локальной Шенноновской энтропии текущего состояния ноды."""
+        if self.entropy_state <= 1:
+            return 0.0
+        # Энтропия как отношение разрядности текущего числа к базовой
+        bit_length = self.entropy_state.bit_length()
+        p = 1.0 / (bit_length + 1)
+        return -(p * math.log2(p) + (1 - p) * math.log2(1 - p))
 
-    def calculate_step(self, state, dt):
-        """
-        Расчет следующего фазового состояния точки с учетом сжатия времени и шума Шеннона.
-        """
-        x, y, z = state
-        r = np.sqrt(x**2 + y**2) + self.EPSILON
-        
-        # 1. Релятивистское искажение времени: dt (внешнее) -> dtau (внутреннее)
-        time_factor = 1.0 / (np.power(np.abs(self.Z_MAX - z), self.gamma) + self.EPSILON)
-        dtau = dt * time_factor
-        
-        # Стабилизация шага во избежание численного взрыва в точке сингулярности
-        dtau = min(dtau, 0.05)
+    def compute_evolution_step(self, external_dt):
+        """Шаг эволюции ноды с учетом релятивистского сжатия времени."""
+        if self.is_locked:
+            return 0.0, "Gold (Fire Seed)"
 
-        # 2. Интегрирование детерминированной траектории методом RK4
-        k1 = self._deterministic_derivs(state)
-        k2 = self._deterministic_derivs(state + 0.5 * dtau * k1)
-        k3 = self._deterministic_derivs(state + 0.5 * dtau * k2)
-        k4 = self._deterministic_derivs(state + dtau * k3)
+        current_entropy = self.calculate_shannon_entropy()
         
-        new_state = state + (dtau / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
+        # Релятивистский множитель: сжатие времени при стремлении энтропии к нулю
+        time_compression = 1.0 / (current_entropy + 1e-6)
+        delta_tau = external_dt * time_compression
         
-        # 3. Наложение стохастического Шенноновского шума (Побитовое сито)
-        # Амплитуда шума затухает степенным образом (alpha) по мере уменьшения радиуса
-        noise_amplitude = self.sigma * np.power(r / self.R_MAX, self.alpha)
+        # Ограничитель шага для стабильности симуляции в ядре
+        delta_tau = min(delta_tau, 0.5)
+        self.internal_time_tau += delta_tau
         
-        if r < 0.05:
-            # Предельный переход: система коллапсирует в дискретный шаг Коллатца
-            new_state[0] = 0.0
-            new_state[1] = 0.0
-            
-            # Дискретная модуляция координаты Z (эмуляция цикла 4-2-1)
-            z_int = int(np.abs(new_state[2] * 100))
-            if z_int == 0:
-                z_int = 4  # Защита от полного затухания
-            
-            if z_int % 2 == 0:
-                new_state[2] = (z_int // 2) / 100.0
+        # Вычисляем количество сиракузских шагов за квант delta_tau
+        steps_to_run = max(1, int(delta_tau * 50))
+        
+        for _ in range(steps_to_run):
+            if self.entropy_state <= 1:
+                self.entropy_state = 1
+                self.is_locked = True
+                break
+                
+            # Побитовое сито (Шаг Коллатца)
+            if self.entropy_state % 2 == 0:
+                self.entropy_state = self.entropy_state // 2
             else:
-                new_state[2] = (3 * z_int + 1) / 100.0
-        else:
-            # Генерация гауссова шума для X и Y координат графа
-            noise_x = random.gauss(0, np.sqrt(dtau)) * noise_amplitude
-            noise_y = random.gauss(0, np.sqrt(dtau)) * noise_amplitude
-            new_state[0] += noise_x
-            new_state[1] += noise_y
-            
-        return new_state, dtau
+                self.entropy_state = 3 * self.entropy_state + 1
+                
+            self.history.append(self.entropy_state)
+            self.steps_computed += 1
 
-    def get_current_epoch(self, state):
-        """Динамическое определение футурологической эпохи по удалению от центра."""
-        x, y, _ = state
-        r = np.sqrt(x**2 + y**2)
-        relative_r = r / self.R_MAX
-        
-        if relative_r > 0.8:
-            return "Green (AI)"
-        elif relative_r > 0.6:
-            return "Light Blue (Cyber-implants)"
-        elif relative_r > 0.4:
-            return "Blue (Digital Mind)"
-        elif relative_r > 0.2:
-            return "Purple (Mind Cloud)"
-        elif relative_r > 0.05:
-            return "White (Unknowable Zone)"
+        # Динамическое определение эпохи на основе текущей энтропии
+        if current_entropy > 0.8:
+            epoch = "Green (AI)"
+        elif current_entropy > 0.6:
+            epoch = "Light Blue (Cyber-implants)"
+        elif current_entropy > 0.4:
+            epoch = "Blue (Digital Mind)"
+        elif current_entropy > 0.2:
+            epoch = "Purple (Mind Cloud)"
+        elif current_entropy > 0.0:
+            epoch = "White (Unknowable Zone)"
         else:
-            return "Gold (Fire Seed)"
+            epoch = "Gold (Fire Seed)"
+            
+        return delta_tau, epoch
 
 
 class NautilusCore:
-    def __init__(self):
-        # Инициализация аттрактора с кубическим затуханием шума
-        self.attractor = NautilusAttractor(omega=2.5, b=0.3, k=0.5, sigma=1.2, alpha=3.0, gamma=1.5)
-        self.active_particles = {}
+    def __init__(self, target_nodes=4):
+        self.external_time_t = 0.0
+        self.target_nodes_count = target_nodes
+        self.active_nodes = {}
+        print(f"[Nautilus Core v0.5.2] Ядро Конвергенции успешно инициализировано.")
 
-    def calculate_shannon_entropy(self, radius):
-        """Расчет теоретической Шенноновской энтропии на данном витке."""
-        relative_r = radius / self.attractor.R_MAX
-        # Вероятностная неопределенность шума падает при приближении к центру
-        p_noise = max(min(np.power(relative_r, self.attractor.alpha), 0.999), 0.001)
-        p_order = 1.0 - p_noise
-        entropy = -(p_noise * math.log2(p_noise) + p_order * math.log2(p_order))
-        return entropy
+    def _spawn_node(self, node_id):
+        """Генерация новой независимой ноды со случайным хаос-семенем."""
+        initial_seed = random.randint(5000, 49999)
+        self.active_nodes[node_id] = ConvergenceNode(node_id, initial_seed)
 
     def process_stream(self, raw_data_string):
         """
         Главный метод обработки входящего потока данных.
-        Превращает хаотичный JSON-сигнал во фрактальные координаты аттрактора Наутилуса.
+        Привязывает пакет к конкретной ноде сети и продвигает её по таймлайну Конвергенции.
         """
+        self.external_time_t += 0.01  # Фиксированный шаг внешнего наблюдателя dt
+        
         try:
             packet = json.loads(raw_data_string)
-            particle_id = packet.get("id", "default_stream")
+            stream_id = packet.get("id", "stream_01")
         except (json.JSONDecodeError, AttributeError):
-            packet = {}
-            particle_id = "default_stream"
+            stream_id = "stream_01"
 
-        # Если частица новая, выбрасываем её на внешний хаотичный контур (Зеленая эпоха)
-        if particle_id not in self.active_particles:
-            angle = random.uniform(0, 2 * math.pi)
-            self.active_particles[particle_id] = np.array([
-                self.attractor.R_MAX * math.cos(angle),
-                self.attractor.R_MAX * math.sin(angle),
-                self.attractor.Z_MAX
-            ])
+        # Если для данного потока нода еще не создана — инициализируем её
+        if stream_id not in self.active_nodes:
+            self._spawn_node(stream_id)
 
-        current_state = self.active_particles[particle_id]
+        node = self.active_nodes[stream_id]
         
-        # Шаг вычисления по дифференциальным уравнениям аттрактора (dt = 0.01)
-        dt = 0.01
-        new_state, dtau = self.attractor.calculate_step(current_state, dt)
-        
-        # Сохраняем обновленные координаты частицы в фазовом пространстве
-        self.active_particles[particle_id] = new_state
-        
-        # Расчет радиуса и Шенноновской энтропии
-        r = np.sqrt(new_state[0]**2 + new_state[1]**2)
-        shannon_entropy = self.calculate_shannon_entropy(r)
-        epoch = self.attractor.get_current_epoch(new_state)
+        # Производим вычисление шага во внутреннем релятивистском времени
+        delta_tau, current_epoch = node.compute_evolution_step(external_dt=0.01)
+        shannon_entropy = node.calculate_shannon_entropy()
 
-        # Сборка финального синхронизированного пакета для фронтенда
+        # Проверяем статус глобальной конвергенции всей сети
+        total_nodes = len(self.active_nodes)
+        locked_nodes = sum(1 for n in self.active_nodes.values() if n.is_locked)
+        global_convergence_ratio = locked_nodes / total_nodes if total_nodes > 0 else 0.0
+
+        # Сборка синхронизированного пакета телеметрии для фронтенда и логов
         output_metrics = {
-            "id": particle_id,
-            "coordinates": {
-                "x": round(float(new_state[0]), 4),
-                "y": round(float(new_state[1]), 4),
-                "z": round(float(new_state[2]), 4)
+            "stream_id": stream_id,
+            "meta": {
+                "version": "v0.5.2-beta",
+                "epoch": current_epoch,
+                "is_locked": node.is_locked
             },
             "physics": {
-                "radius": round(float(r), 4),
-                "shannon_entropy": round(float(shannon_entropy), 4),
-                "delta_tau": round(float(dtau), 4)
+                "entropy_state": node.entropy_state,
+                "shannon_entropy": round(shannon_entropy, 4),
+                "external_time_t": round(self.external_time_t, 4),
+                "internal_time_tau": round(node.internal_time_tau, 4),
+                "delta_tau": round(delta_tau, 4),
+                "steps_computed": node.steps_computed
             },
-            "meta": {
-                "epoch": epoch,
-                "version": "v0.5.0-beta",
-                "collatz_trigger": bool(r < 0.05)
+            "network": {
+                "total_active_nodes": total_nodes,
+                "global_convergence_ratio": round(global_convergence_ratio, 2),
+                "system_converged": all(n.is_locked for n in self.active_nodes.values()) if total_nodes >= self.target_nodes_count else False
             }
         }
         
         return json.dumps(output_metrics, ensure_ascii=False)
 
-# Точка входа для локального тестирования ядра
+
+# Блок локального тестирования интеграции
 if __name__ == "__main__":
-    core = NautilusCore()
-    print("[Nautilus Core] Движок 3D-аттрактора запущен.")
+    core = NautilusCore(target_nodes=3)
     
-    # Симулируем 5 шагов эволюции одного графа данных
-    test_packet = json.dumps({"id": "node_alpha_01", "value": 42})
-    for step in range(1, 6):
-        result = core.process_stream(test_packet)
-        parsed = json.loads(result)
-        print(f"Шаг {step} | Эпоха: {parsed['meta']['epoch']} | Entropy: {parsed['physics']['shannon_entropy']} | XYZ: {list(parsed['coordinates'].values())}")
+    # Симулируем параллельные запросы от трех разных узлов сети (mrdarkduck-mesh)
+    test_streams = ["node_alpha", "node_beta", "node_gamma"]
+    
+    print("\n--- Запуск обработки потоков через интегрированное ядро ---")
+    
+    # Крутим цикл, пока все три независимых потока не схлопнутся в инвариант
+    all_locked = False
+    cycle = 0
+    
+    while not all_locked and cycle < 1000:
+        cycle += 1
+        for stream in test_streams:
+            packet = json.dumps({"id": stream})
+            result_json = core.process_stream(packet)
+            result = json.loads(result_json)
+            
+            # Выводим логи фазовых скачков раз в несколько итераций
+            if cycle % 25 == 0:
+                print(f"[t={result['physics']['external_time_t']}] Поток: {result['stream_id']} | "
+                      f"Эпоха: {result['meta']['epoch']} | "
+                      f"State: {result['physics']['entropy_state']} | "
+                      f"H: {result['physics']['shannon_entropy']} | "
+                      f"ConvRatio: {result['network']['global_convergence_ratio']}")
+                
+            if result['network']['system_converged']:
+                all_locked = True
+                print(f"\n[!] СИНХРОННАЯ КОНВЕРГЕНЦИЯ ЗАФИКСИРОВАНА НА ШАГЕ {cycle}!")
+                print(f"Итоговый JSON: {result_json}")
+                break
