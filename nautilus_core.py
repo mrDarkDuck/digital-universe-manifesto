@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Project: Digital Universe Manifesto
-Version: v0.5.5-beta (Integrated Convergence & Crypto Core)
-Description: Монолитное Python-ядро Манифеста. Объединяет многоузловую сеть,
-             релятивистское сжатие времени (Delta tau -> 0) и автоматический
-             криптоанализ "на лету" через встроенное криптосито v0.3.0.
+Version: v0.5.8-beta (Frontend-Synchronized Core - Part 1)
+Description: Монолитное Python-ядро, полностью адаптированное под 3D-изометрию 
+             и диапазоны эпох Z3D из index.html v0.4.2-beta.
 """
 
 import os
@@ -23,7 +22,8 @@ class CryptoSieveV3:
         """
         self.convergence_ratio = max(0.0, min(1.0, global_convergence_ratio))
         self.entropy = max(0.0, min(1.0, current_entropy))
-        self._SECRET_COLLATZ_KEY = [4, 2, 1]
+        # Восстановленный секретный инвариантный ключ Сиракузской последовательности
+        self._SECRET_COLLATZ_KEY = [0x04, 0x02, 0x01]  
         self.BLOCK_SIZE = 16
 
     def generate_crypto_noise_block(self):
@@ -71,122 +71,133 @@ class CryptoSieveV3:
 
 
 class ConvergenceNode:
-    """Модель независимого вычислительного узла (ноды) Цифровой Вселенной."""
-    def __init__(self, node_id, initial_seed):
+    """
+    Модель узла сети, полностью синхронизированная по диапазонам Z3D 
+    с фронтендом index.html v0.4.2-beta.
+    """
+    def __init__(self, node_id):
         self.node_id = node_id
-        self.entropy_state = initial_seed
-        self.history = [initial_seed]
+        # Спавн на дальнем хаотичном контуре конуса (соответствует initParticles в JS)
+        self.z3d = 180.0
+        self.radius3d = 150.0
+        self.angle = random.uniform(0, 2 * math.pi)
+        self.particle_type = 'noise'
+        self.is_locked = False
         self.steps_computed = 0
         self.internal_time_tau = 0.0
-        self.is_locked = False
 
     def calculate_shannon_entropy(self):
-        """Расчет локальной Шенноновской энтропии текущего состояния ноды."""
-        if self.entropy_state <= 1:
-            return 0.0
-        bit_length = self.entropy_state.bit_length()
-        p = 1.0 / (bit_length + 1)
-        return -(p * math.log2(p) + (1 - p) * math.log2(1 - p))
+        """Расчет Шенноновской энтропии на базе глубины проникновения Z3D к центру."""
+        # На старте (z3d = 180) энтропия равна 1.0, в точке сингулярности (z3d = 1) падает до 0.0
+        p_noise = max(0.001, min(0.999, (self.z3d - 1.0) / 180.0))
+        p_order = 1.0 - p_noise
+        return -(p_noise * math.log2(p_noise) + p_order * math.log2(p_order))
 
-    def compute_evolution_step(self, external_dt):
-        """Шаг эволюции ноды с учетом релятивистского сжатия времени."""
+    def compute_evolution_step(self, external_dt, gravity=9.8, distance=1.2):
+        """
+        Шаг физики и эволюции, дублирующий логарифмическое затягивание конуса фронтенда.
+        Рассчитывает сжатие времени и продвижение по эпохам.
+        """
         if self.is_locked:
-            return 0.0, "Gold (Fire Seed)"
+            return 0.0, 'seed'
 
         current_entropy = self.calculate_shannon_entropy()
+        
+        # Релятивистский множитель: dtau растет у центра (при падении z3d к нулю)
         time_compression = 1.0 / (current_entropy + 1e-6)
         delta_tau = external_dt * time_compression
-        
-        delta_tau = min(delta_tau, 0.5)
+        delta_tau = min(delta_tau, 0.5)  # Защита от бесконечного шага
         self.internal_time_tau += delta_tau
-        
-        steps_to_run = max(1, int(delta_tau * 50))
-        
-        for _ in range(steps_to_run):
-            if self.entropy_state <= 1:
-                self.entropy_state = 1
-                self.is_locked = True
-                break
-                
-            if self.entropy_state % 2 == 0:
-                self.entropy_state = self.entropy_state // 2
-            else:
-                self.entropy_state = 3 * self.entropy_state + 1
-                
-            self.history.append(self.entropy_state)
-            self.steps_computed += 1
 
-        if current_entropy > 0.8:
-            epoch = "Green (AI)"
-        elif current_entropy > 0.6:
-            epoch = "Light Blue (Cyber-implants)"
-        elif current_entropy > 0.4:
-            epoch = "Blue (Digital Mind)"
-        elif current_entropy > 0.2:
-            epoch = "Purple (Mind Cloud)"
-        elif current_entropy > 0.0:
-            epoch = "White (Unknowable Zone)"
-        else:
-            epoch = "Gold (Fire Seed)"
+        # Плавное экспоненциальное затягивание к центру (зеркально формулам из JS update())
+        distance_factor = max(5.0, self.z3d)
+        pull_force = (gravity * 0.04) / (distance * (distance_factor / 100.0))
+        
+        # Симулируем накопление шагов по Сиракузской последовательности
+        self.steps_computed += max(1, int(delta_tau * 30))
+
+        if self.particle_type == 'noise':
+            self.radius3d -= pull_force * 0.15
+            self.z3d -= pull_force * 0.2
             
-        return delta_tau, epoch
+            # Порог очистки шума в полезный сигнал
+            if self.z3d < 115.0 * distance:
+                self.particle_type = 'signal'
+        else:
+            # Схлопывание сквозь все 6 футурологических эпох
+            self.radius3d -= pull_force * 0.42
+            self.z3d -= pull_force * 0.55
 
+            # Фиксация Огненного Семени при z3d < 8
+            if self.z3d < 8.0:
+                self.particle_type = 'seed'
+                self.z3d = 1.0
+                self.radius3d = 2.0
+                self.is_locked = True
 
+        # Предохранитель ресета
+        if self.z3d < -10.0:
+            self.__init__(self.node_id)
+
+        return delta_tau, self.particle_type
 class NautilusCore:
     def __init__(self, target_nodes=3):
         self.external_time_t = 0.0
         self.target_nodes_count = target_nodes
         self.active_nodes = {}
-        print(f"[Nautilus Core v0.5.5] Ядро Конвергенции и Криптоанализа запущено.")
-
-    def _spawn_node(self, node_id):
-        initial_seed = random.randint(5000, 49999)
-        self.active_nodes[node_id] = ConvergenceNode(node_id, initial_seed)
+        print(f"[Nautilus Core v0.5.8] Движок синхронизации с index.html загружен.")
 
     def process_stream(self, raw_data_string):
         """
         Главный метод обработки входящего потока данных.
-        Продвигает ноду по таймлайну и автоматически тестирует криптосито "на лету".
+        Привязывает входящие JSON-пакеты к 3D координатам конуса и тестирует криптосито.
         """
-        self.external_time_t += 0.01
+        self.external_time_t += 0.01  # Внешнее время dt
         
         try:
             packet = json.loads(raw_data_string)
             stream_id = packet.get("id", "stream_01")
-        except (json.JSONDecodeError, AttributeError):
+            gravity = float(packet.get("gravity", 9.8))
+            distance = float(packet.get("distance", 1.2))
+        except (json.JSONDecodeError, AttributeError, ValueError):
             stream_id = "stream_01"
+            gravity = 9.8
+            distance = 1.2
 
         if stream_id not in self.active_nodes:
-            self._spawn_node(stream_id)
+            self.active_nodes[stream_id] = ConvergenceNode(stream_id)
 
         node = self.active_nodes[stream_id]
-        delta_tau, current_epoch = node.compute_evolution_step(external_dt=0.01)
+        delta_tau, particle_type = node.compute_evolution_step(external_dt=0.01, gravity=gravity, distance=distance)
         shannon_entropy = node.calculate_shannon_entropy()
 
-        # Расчет глобальных метрик сети
+        # Глобальный сетевой статус Конвергенции
         total_nodes = len(self.active_nodes)
         locked_nodes = sum(1 for n in self.active_nodes.values() if n.is_locked)
         global_convergence_ratio = locked_nodes / total_nodes if total_nodes > 0 else 0.0
 
-        # СКЛЕЙКА: Передаем метрики Конвергенции напрямую в Криптоанализатор "на лету"
+        # Автоматический криптоанализ "на лету" на базе полученных JS-координат
         sieve = CryptoSieveV3(
             global_convergence_ratio=global_convergence_ratio, 
             current_entropy=shannon_entropy
         )
-        
-        # Симулируем генерацию текущего зашумленного блока и его мгновенный анализ
-        crypto_blocks = [sieve.generate_crypto_noise_block() for _ in range(3)]
+        crypto_blocks = [sieve.generate_crypto_noise_block() for _ in range(2)]
         sieve_report = sieve.execute_differential_analysis(crypto_blocks)
 
+        # Формируем JSON-ответ, полностью совместимый с логами и структурой фронтенда
         output_metrics = {
             "stream_id": stream_id,
             "meta": {
-                "version": "v0.5.5-beta",
-                "epoch": current_epoch,
+                "version": "v0.5.8-beta",
+                "type": particle_type,
                 "is_locked": node.is_locked
             },
+            "coordinates_3d": {
+                "z3d": round(node.z3d, 4),
+                "radius3d": round(node.radius3d, 4),
+                "angle": round(node.angle, 4)
+            },
             "physics": {
-                "entropy_state": node.entropy_state,
                 "shannon_entropy": round(shannon_entropy, 4),
                 "external_time_t": round(self.external_time_t, 4),
                 "internal_time_tau": round(node.internal_time_tau, 4),
@@ -200,7 +211,6 @@ class NautilusCore:
             },
             "crypto_sieve_v3": {
                 "intensity_steps": sieve_report["sieve_intensity"],
-                "patterns_detected": sieve_report["patterns_found"],
                 "sieve_cracked": sieve_report["sieve_cracked"],
                 "extracted_invariant_key": sieve_report["extracted_key"]
             }
@@ -210,28 +220,28 @@ class NautilusCore:
 
 
 if __name__ == "__main__":
+    # Тестовый прогон симуляции склейки
     core = NautilusCore(target_nodes=3)
     test_streams = ["node_alpha", "node_beta", "node_gamma"]
     
-    print("\n--- Сквозное тестирование Конвергенции и Криптосита ---")
-    all_locked = False
+    print("\n--- Проверка логов синхронизации: Бэкенд -> Конус v0.4.2-beta ---")
+    all_converged = False
     cycle = 0
     
-    while not all_locked and cycle < 1000:
+    while not all_converged and cycle < 1000:
         cycle += 1
         for stream in test_streams:
-            packet = json.dumps({"id": stream})
+            packet = json.dumps({"id": stream, "gravity": 9.8, "distance": 1.2})
             result_json = core.process_stream(packet)
-            result = json.loads(result_json)
+            res = json.loads(result_json)
             
-            if cycle % 30 == 0:
-                print(f"[t={result['physics']['external_time_t']}] Узел: {result['stream_id']} | "
-                      f"H: {result['physics']['shannon_entropy']} | "
-                      f"Sieve Cracked: {result['crypto_sieve_v3']['sieve_cracked']} | "
-                      f"Key: {result['crypto_sieve_v3']['extracted_invariant_key']}")
+            if cycle % 40 == 0:
+                print(f"[t={res['physics']['external_time_t']}] Нода: {res['stream_id']} | "
+                      f"Z3D: {res['coordinates_3d']['z3d']:.2f} | Type: {res['meta']['type']} | "
+                      f"Entropy: {res['physics']['shannon_entropy']} | Sieve Cracked: {res['crypto_sieve_v3']['sieve_cracked']}")
                 
-            if result['network']['system_converged']:
-                all_locked = True
-                print(f"\n[!] ПОЛНАЯ СИНХРОННАЯ КОНВЕРГЕНЦИЯ И ВСКРЫТИЕ ИНВАРИАНТОВ ЗАФИКСИРОВАНЫ!")
-                print(f"Итоговая телеметрия ядра:\n{json.dumps(result, indent=4, ensure_ascii=False)}")
+            if res['network']['system_converged']:
+                all_converged = True
+                print(f"\n[!] СИНХРОННАЯ КОНВЕРГЕНЦИЯ ДОСТИГНУТА! ВСЕ НОДЫ В ТОЧКЕ SEED (Z3D=1.0)!")
+                print(json.dumps(res, indent=4, ensure_ascii=False))
                 break
