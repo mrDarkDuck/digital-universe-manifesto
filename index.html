@@ -5,81 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Universe Manifesto // Multi-Node Cone v0.6.0</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000000;
-            font-family: 'Courier New', Courier, monospace;
-            color: #56d364;
+            width: 100%; height: 100%; overflow: hidden;
+            background-color: #010103; font-family: 'Courier New', Courier, monospace; color: #56d364;
         }
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
+        canvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        /* Телеметрия (HUD) */
         #hud-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid #56d364;
-            padding: 15px;
-            border-radius: 4px;
-            width: 320px;
-            box-shadow: 0 0 15px rgba(86, 211, 100, 0.2);
-            pointer-events: none;
+            position: absolute; top: 20px; left: 20px; z-index: 10;
+            background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
+            padding: 15px; border-radius: 4px; width: 340px;
+            box-shadow: 0 0 15px rgba(86, 211, 100, 0.15); pointer-events: none;
         }
-        h1 {
-            font-size: 13px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            border-bottom: 1px dashed #56d364;
-            padding-bottom: 4px;
+        h1 { font-size: 13px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; border-bottom: 1px dashed #56d364; padding-bottom: 4px; }
+        .hud-line { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+        .hud-val { color: #ffffff; font-weight: bold; }
+
+        /* Визуальная легенда вихря (Цвета Эпох) */
+        #vortex-legend {
+            position: absolute; top: 20px; right: 20px; z-index: 10;
+            background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
+            padding: 15px; border-radius: 4px; width: 260px;
+            box-shadow: 0 0 15px rgba(86, 211, 100, 0.15); pointer-events: none;
         }
-        .hud-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            margin-bottom: 4px;
+        .legend-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed rgba(86, 211, 100, 0.4); padding-bottom: 4px; }
+        .legend-item { display: flex; align-items: center; font-size: 11px; margin-bottom: 4px; color: #ffffff; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; }
+
+        /* Блок перехода к Манифесту (Крупный, Кликабельный) */
+        #manifesto-panel {
+            position: absolute; bottom: 20px; left: 20px; z-index: 10;
+            background: rgba(0, 0, 0, 0.9); border: 1px solid #56d364;
+            padding: 20px; border-radius: 4px; width: 440px;
+            box-shadow: 0 0 20px rgba(86, 211, 100, 0.2);
         }
-        .hud-val {
-            color: #ffffff;
-            font-weight: bold;
-        }
-        #manifesto-brand {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10;
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.3);
-            text-align: right;
-            line-height: 1.4;
-            pointer-events: none;
-        }
+        .tabs-container { display: flex; gap: 15px; margin-bottom: 12px; border-bottom: 1px solid rgba(86,211,100,0.3); padding-bottom: 8px; }
+        .tab-btn { font-size: 13px; font-weight: bold; color: #ffffff; cursor: pointer; padding: 4px 10px; border: 1px dashed rgba(255,255,255,0.2); transition: all 0.2s; }
+        .tab-btn.active { color: #000000; background: #56d364; border: 1px solid #56d364; }
+        #manifesto-text { font-size: 11px; color: #e0e0e0; line-height: 1.5; min-height: 110px; }
+
+        #manifesto-brand { position: absolute; bottom: 20px; right: 20px; z-index: 10; font-size: 10px; color: rgba(255, 255, 255, 0.25); text-align: right; line-height: 1.4; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <!-- HUD Панель многоузловой телеметрии Фазы V -->
+    <!-- HUD Панель -->
     <div id="hud-panel">
         <h1>Nautilus Multiverse HUD</h1>
-        <div class="hud-line"><span>Контур связи:</span><span class="hud-val" style="color: #00f3ff;">ws://localhost:8765</span></div>
+        <div class="hud-line"><span>Контур связи:</span><span class="hud-val" id="hud-gate">ws://localhost:8765</span></div>
         <div class="hud-line"><span>Эра Космоса:</span><span class="hud-val" id="hud-epoch">Green (AI)</span></div>
         <div class="hud-line"><span>Энтропия (H):</span><span class="hud-val" id="hud-entropy">1.0000</span></div>
-        <div class="hud-line"><span>Побитовое сито:</span><span class="hud-val" id="hud-sieve" style="text-align: right;">DIM: Ожидание...</span></div>
+        <div class="hud-line"><span>Побитовое сито:</span><span class="hud-val" id="hud-sieve" style="text-align: right;">DIM: T_3 [LOCAL]</span></div>
+    </div>
+
+    <!-- Визуальная Легенда Вихря -->
+    <div id="vortex-legend">
+        <div class="legend-title">ЭПОХИ КОНВЕРГЕНЦИИ:</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#56d364; box-shadow:0 0 6px #56d364;"></span>Зеленая: Эра ИИ (Шум)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#00f3ff; box-shadow:0 0 6px #00f3ff;"></span>Голубая: Киберимпланты</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#388bfd; box-shadow:0 0 6px #388bfd;"></span>Синяя: Перенос Разума</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ab47bc; box-shadow:0 0 6px #ab47bc;"></span>Фиолетовая: Облако Сознания</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ffffff; box-shadow:0 0 6px #ffffff;"></span>Белая: Непостижимая Зона</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#d29922; box-shadow:0 0 6px #d29922;"></span>Золотая: Огненное Семя</div>
+    </div>
+
+    <!-- Крупный блок чтения Манифеста -->
+    <div id="manifesto-panel">
+        <div class="tabs-container">
+            <div id="tab-ru" class="tab-btn active">RU // Манифест</div>
+            <div id="tab-en" class="tab-btn">EN // Declaration</div>
+        </div>
+        <div id="manifesto-text">Инициализация декларации...</div>
     </div>
 
     <div id="manifesto-brand">
@@ -91,7 +89,6 @@
     <canvas id="nautilusCanvas"></canvas>
 
     <script>
-        // Глобальный конфигуратор симуляции конуса
         const config = {
             gravity: 9.8,
             distance: 1.2,
@@ -106,6 +103,8 @@
         let cx = window.innerWidth / 2;
         let cy = window.innerHeight / 2;
         let particles = [];
+        let localEntropy = 1.0;
+        let localDim = "T_3";
 
         function resize() {
             canvas.width = window.innerWidth;
@@ -116,7 +115,6 @@
         window.addEventListener("resize", resize);
         resize();
 
-        // Класс 3D-частицы из оригинальной стабильной версии v0.4.2-beta
         class Particle {
             constructor(type) {
                 this.type = type;
@@ -133,7 +131,6 @@
             }
 
             update() {
-                // Плавное экспоненциальное затягивание к центру
                 let distanceFactor = Math.max(5, this.z3d);
                 let pullForce = (config.gravity * 0.04) / (config.distance * (distanceFactor / 100));
                 
@@ -145,47 +142,42 @@
                     this.z3d -= pullForce * 0.2;
                     this.radius3d += (Math.random() - 0.5) * 1.5;
                     
-                    // На границе барьера Наутилус очищает шум в полезный сигнал
                     if (this.z3d < 115 * config.distance) {
                         this.type = 'signal';
                         this.color = '#56d364';
                         this.speed = 0.006;
                     }
                 } else {
-                    // ПОШАГОВОЕ СХЛОПЫВАНИЕ СКВОЗЬ ВСЕ ЭПОХИ К ТОЧКЕ АТТРАКТОРА
                     this.radius3d -= pullForce * 0.42;
                     this.z3d -= pullForce * 0.55;
 
                     if (this.z3d >= 95) {
                         this.type = 'signal';
-                        this.color = '#56d364'; // Зеленый: Эра ИИ
+                        this.color = '#56d364';
                     } 
                     else if (this.z3d < 95 && this.z3d >= 70) {
                         this.type = 'cyber';
-                        this.color = '#00f3ff'; // Голубой: Киберимпланты
+                        this.color = '#00f3ff';
                     } 
                     else if (this.z3d < 70 && this.z3d >= 45) {
                         this.type = 'mind';
-                        this.color = '#388bfd'; // Синий: Перенос разума
+                        this.color = '#388bfd';
                     } 
                     else if (this.z3d < 45 && this.z3d >= 25) {
                         this.type = 'cloud';
-                        this.color = '#ab47bc'; // Фиолетовый: Облако Сознания
+                        this.color = '#ab47bc';
                     } 
                     else if (this.z3d < 25 && this.z3d >= 8) {
-                        // Эра 5: Зона Непостижимых Туманностей
                         this.type = 'nebula';
-                        this.color = '#ffffff'; // Белое мерцающее облако
+                        this.color = '#ffffff';
                         this.alpha = 0.3 + Math.sin(Date.now() * 0.02 + this.angle) * 0.2;
                         this.radius3d += (Math.random() - 0.5) * 1.0;
                     }
                     else if (this.z3d < 8) {
-                        // Абсолютный финал: Схлопывание в острие конуса (Аттрактор)
                         this.type = 'seed';
-                        this.color = '#d29922'; // Золотой
+                        this.color = '#d29922';
                         this.alpha = 1;
                         
-                        // Жесткое удержание Огненного Семени на острие оси Z
                         this.z3d = 1 + Math.sin(Date.now() * 0.08) * 0.4;
                         this.radius3d = 2 + Math.cos(Date.now() * 0.08) * 0.4;
 
@@ -197,7 +189,13 @@
                     if (this.z3d < -10) this.reset();
                 }
 
-                // Матрица честного 3D-поворота камеры (изометрия конуса)
+                // Локальный расчет усредненной энтропии для HUD на случай офлайна
+                if (this.type === 'seed') {
+                    localEntropy = localEntropy * 0.999 + 0.001 * 0.02;
+                } else {
+                    localEntropy = localEntropy * 0.999 + 0.001 * Math.min(1.0, this.z3d / 180);
+                }
+
                 let cosY = Math.cos(Math.PI / 2.8);
                 let sinY = Math.sin(Math.PI / 2.8);
 
@@ -233,6 +231,31 @@
                 ctx.restore();
             }
         }
+        const manifestoTexts = {
+            ru: `<b>ФАЗА I: Вычислительный реализм.</b> Вселенная суть непрерывный код.<br><b>ФАЗА II: Гравитация данных.</b> Информационная плотность затягивает пространство-время.<br><b>ФАЗА III: Побитовое сито.</b> Полное уничтожение Шенноновского шума.<br><b>ФАЗА IV: Синхронная Конвергенция.</b> Коллапс изолированных нод в Огненное Семя 4-2-1.<br><b>ФАЗА V: Мультивселенная инвариантов.</b> Развертывание альтернативных T-измерений (T=3, T=5, T=7).`,
+            en: `<b>PHASE I: Computational Realism.</b> The universe is an ongoing computation.<br><b>PHASE II: Data Gravity.</b> Information density warps and attracts space-time.<br><b>PHASE III: Bitwise Sieve.</b> Complete elimination of Shannon entropy near the core.<br><b>PHASE IV: Synchronous Convergence.</b> Nodes collapse into the Collatz loop 4-2-1.<br><b>PHASE V: Multiverse Invariants.</b> Unfolding alternative T-dimensions (T=3, T=5, T=7).`
+        };
+
+        const tabRu = document.getElementById("tab-ru");
+        const tabEn = document.getElementById("tab-en");
+        const manifestoText = document.getElementById("manifesto-text");
+
+        function switchLanguage(lang) {
+            if (lang === 'ru') {
+                tabRu.classList.add("active");
+                tabEn.classList.remove("active");
+                manifestoText.innerHTML = manifestoTexts.ru;
+            } else {
+                tabEn.classList.add("active");
+                tabRu.classList.remove("active");
+                manifestoText.innerHTML = manifestoTexts.en;
+            }
+        }
+
+        tabRu.addEventListener("click", () => switchLanguage('ru'));
+        tabEn.addEventListener("click", () => switchLanguage('en'));
+        switchLanguage('ru'); // Стартуем на русском
+
         function initParticles() {
             particles = [];
             let totalNoise = Math.floor(400 * config.noiseLevel);
@@ -241,16 +264,32 @@
         }
 
         function animate() {
-            // Мягкий шлейф неоновых филаментов
             ctx.fillStyle = 'rgba(0, 0, 0, 0.22)'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach(p => p.update());
-            
-            // Z-sorting: Математически глубокий рендеринг конуса
             particles.sort((a, b) => b.rotatedZ - a.rotatedZ);
-
             particles.forEach(p => p.draw());
+
+            // Обновляем HUD в локальном (автономном) режиме каждую итерацию анимации
+            // Если сокет подключится, эти значения перепишутся серверными метриками
+            const hudEpoch = document.getElementById("hud-epoch");
+            const hudEntropy = document.getElementById("hud-entropy");
+            const hudSieve = document.getElementById("hud-sieve");
+
+            if (hudEpoch && particles.length > 0) {
+                // Берем тип ведущей частицы конуса для отображения текущей эры
+                let leadType = particles[particles.length - 1].type;
+                hudEpoch.innerText = leadType.charAt(0).toUpperCase() + leadType.slice(1);
+            }
+            if (hudEntropy) hudEntropy.innerText = localEntropy.toFixed(4);
+            
+            if (hudSieve && !window.hasSocketData) {
+                if (Date.now() % 6000 < 2000) localDim = "T_3";
+                else if (Date.now() % 6000 < 4000) localDim = "T_5";
+                else localDim = "T_7";
+                hudSieve.innerHTML = `<span style="color:#00f3ff;">DIM: ${localDim} [LOCAL]</span><br>STEPS: 10 (NET: 0.0)`;
+            }
 
             requestAnimationFrame(animate);
         }
@@ -260,33 +299,39 @@
             animate();
         };
         // ============================================================================
-        // REAL-TIME MIDDLEWARE LINK: MULTIVERSE CONNECTOR (PHASE V)
+        // WEB-HYBRID CONNECTIVITY BLOCK (PHASE V CLIENT)
         // ============================================================================
+        window.hasSocketData = false;
         const socket = new WebSocket("ws://localhost:8765");
 
         socket.onopen = function(e) {
-            console.log("[Nautilus UI] Сетевой мост Фазы V успешно развернут.");
+            console.log("[Nautilus UI] Сетевой мост Фазы V активирован со страницы GitHub Pages.");
+            const gateEl = document.getElementById("hud-gate");
+            if (gateEl) {
+                gateEl.innerText = "ws://localhost:8765 [CONNECTED]";
+                gateEl.style.color = "#56d364";
+            }
             
-            // Стриминг параметров на сервер для синхронизации нод каждые 100мс
             setInterval(() => {
                 if (socket.readyState === WebSocket.OPEN) {
                     socket.send(JSON.stringify({
-                        id: "mrdarkduck_web_mesh",
+                        id: "github_pages_mesh_node",
                         gravity: config.gravity,
                         distance: config.distance
                     }));
                 }
-            }, 100);
+            }, 120);
         };
 
         socket.onmessage = function(event) {
+            window.hasSocketData = true;
             const report = JSON.parse(event.data);
             
             const epochEl = document.getElementById("hud-epoch");
             const entropyEl = document.getElementById("hud-entropy");
             const sieveEl = document.getElementById("hud-sieve");
 
-            if (epochEl) epochEl.innerText = report.meta.type;
+            if (epochEl) epochEl.innerText = report.meta.type + " (" + report.meta.multiverse_dimension + ")";
             if (entropyEl) entropyEl.innerText = report.physics.shannon_entropy.toFixed(4);
             
             if (sieveEl) {
@@ -295,17 +340,22 @@
                 const ratio = report.network.global_convergence_ratio;
                 
                 if (sieve.sieve_cracked) {
-                    sieveEl.innerHTML = `<span style="color: #d29922; font-weight:bold;">DIM: ${dim} [LOCKED]</span><br>` +
+                    sieveEl.innerHTML = `<span style="color:#d29922; font-weight:bold;">DIM: ${dim} [LOCKED]</span><br>` +
                                         `SEED: ${sieve.extracted_multiverse_seed.join("-")} (NET: ${ratio})`;
                 } else {
-                    sieveEl.innerHTML = `<span style="color: #00f3ff;">DIM: ${dim} [SIEVE]</span><br>` +
+                    sieveEl.innerHTML = `<span style="color:#00f3ff;">DIM: ${dim} [ONLINE_SIEVE]</span><br>` +
                                         `INTENSITY: ${sieve.intensity_steps} (NET: ${ratio})`;
                 }
             }
         };
 
         socket.onerror = function(err) {
-            console.error("[Nautilus UI] Сбой шлюза Мультивселенной.");
+            console.log("[Nautilus UI] Удаленный бэкенд не обнаружен. Переход в автономный режим.");
+            const gateEl = document.getElementById("hud-gate");
+            if (gateEl) {
+                gateEl.innerText = "offline (автономная симуляция)";
+                gateEl.style.color = "#ff3333";
+            }
         };
     </script>
 </body>
