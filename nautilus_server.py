@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Project: Digital Universe Manifesto
-Version: v0.1.0-bridge (WebSocket Middleware Server)
+Version: v0.1.0-bridge (WebSocket Middleware Server - Part 1)
 Description: Серверная прослойка для сквозной real-time трансляции метрик
              между фронтендом v0.4.2-beta и ядром nautilus_core.py.
 """
@@ -10,7 +10,7 @@ Description: Серверная прослойка для сквозной real-
 import asyncio
 import json
 import websockets
-# Импортируем синхронизированное ядро
+# Импортируем синхронизированное ядро из только что собранного файла
 from nautilus_core import NautilusCore
 
 class NautilusWSServer:
@@ -20,10 +20,9 @@ class NautilusWSServer:
         # Инициализируем ядро с ожиданием конвергенции 4 независимых нод
         self.core = NautilusCore(target_nodes=4)
         print(f"[Nautilus Gateway] Движок моста готов к работе.")
-
     async def handler(self, websocket):
         """Обработчик активной WebSocket-сессии с фронтендом."""
-        client_ip = websocket.remote_address[0]
+        client_ip = websocket.remote_address
         print(f"[Gateway] Соединение установлено с узлом: {client_ip}")
         
         try:
