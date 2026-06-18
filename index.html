@@ -23,7 +23,7 @@
         .hud-line { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
         .hud-val { color: #ffffff; font-weight: bold; }
 
-        /* Визуальная легенда вихря (Цвета Эпох) */
+        /* Визуальная легенда вихря */
         #vortex-legend {
             position: absolute; top: 20px; right: 20px; z-index: 10;
             background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
@@ -34,24 +34,34 @@
         .legend-item { display: flex; align-items: center; font-size: 11px; margin-bottom: 4px; color: #ffffff; }
         .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; }
 
-        /* Блок перехода к Манифесту (Крупный, Кликабельный) */
+        /* Модернизированный Блок Манифеста (Крупные Кнопки + Ссылки) */
         #manifesto-panel {
             position: absolute; bottom: 20px; left: 20px; z-index: 10;
             background: rgba(0, 0, 0, 0.9); border: 1px solid #56d364;
-            padding: 20px; border-radius: 4px; width: 440px;
+            padding: 20px; border-radius: 4px; width: 500px;
             box-shadow: 0 0 20px rgba(86, 211, 100, 0.2);
         }
-        .tabs-container { display: flex; gap: 15px; margin-bottom: 12px; border-bottom: 1px solid rgba(86,211,100,0.3); padding-bottom: 8px; }
-        .tab-btn { font-size: 13px; font-weight: bold; color: #ffffff; cursor: pointer; padding: 4px 10px; border: 1px dashed rgba(255,255,255,0.2); transition: all 0.2s; }
-        .tab-btn.active { color: #000000; background: #56d364; border: 1px solid #56d364; }
+        .tabs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(86,211,100,0.3); padding-bottom: 10px; }
+        .tabs-container { display: flex; gap: 10px; }
+        
+        /* Крупные, массивные кнопки переключения языков */
+        .tab-btn { 
+            font-size: 15px; font-weight: bold; color: #ffffff; cursor: pointer; 
+            padding: 8px 16px; border: 1px solid rgba(86, 211, 100, 0.4); 
+            background: rgba(0, 0, 0, 0.5); transition: all 0.2s ease; 
+        }
+        .tab-btn.active { color: #000000; background: #56d364; border: 1px solid #56d364; box-shadow: 0 0 10px rgba(86, 211, 100, 0.3); }
+        
+        /* Крупная внешняя ссылка на GitHub Readme */
+        .readme-link { font-size: 12px; color: #00f3ff; text-decoration: none; border-bottom: 1px dashed #00f3ff; padding-bottom: 2px; font-weight: bold; }
+        .readme-link:hover { color: #ffffff; border-bottom: 1px solid #ffffff; }
+        
         #manifesto-text { font-size: 11px; color: #e0e0e0; line-height: 1.5; min-height: 110px; }
-
         #manifesto-brand { position: absolute; bottom: 20px; right: 20px; z-index: 10; font-size: 10px; color: rgba(255, 255, 255, 0.25); text-align: right; line-height: 1.4; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <!-- HUD Панель -->
     <div id="hud-panel">
         <h1>Nautilus Multiverse HUD</h1>
         <div class="hud-line"><span>Контур связи:</span><span class="hud-val" id="hud-gate">ws://localhost:8765</span></div>
@@ -60,7 +70,6 @@
         <div class="hud-line"><span>Побитовое сито:</span><span class="hud-val" id="hud-sieve" style="text-align: right;">DIM: T_3 [LOCAL]</span></div>
     </div>
 
-    <!-- Визуальная Легенда Вихря -->
     <div id="vortex-legend">
         <div class="legend-title">ЭПОХИ КОНВЕРГЕНЦИИ:</div>
         <div class="legend-item"><span class="legend-dot" style="background:#56d364; box-shadow:0 0 6px #56d364;"></span>Зеленая: Эра ИИ (Шум)</div>
@@ -71,11 +80,15 @@
         <div class="legend-item"><span class="legend-dot" style="background:#d29922; box-shadow:0 0 6px #d29922;"></span>Золотая: Огненное Семя</div>
     </div>
 
-    <!-- Крупный блок чтения Манифеста -->
+    <!-- Крупный интерактивный блок Манифеста с табами и внешними ссылками -->
     <div id="manifesto-panel">
-        <div class="tabs-container">
-            <div id="tab-ru" class="tab-btn active">RU // Манифест</div>
-            <div id="tab-en" class="tab-btn">EN // Declaration</div>
+        <div class="tabs-header">
+            <div class="tabs-container">
+                <div id="tab-ru" class="tab-btn active">RU // Манифест</div>
+                <div id="tab-en" class="tab-btn">EN // Declaration</div>
+            </div>
+            <!-- Сюда динамически инжектируется ссылка на гитхаб-документ -->
+            <a href="README_ru.md" id="readme-redirect" target="_blank" class="readme-link">Открыть README_ru.md ↗</a>
         </div>
         <div id="manifesto-text">Инициализация декларации...</div>
     </div>
@@ -89,146 +102,50 @@
     <canvas id="nautilusCanvas"></canvas>
 
     <script>
-        const config = {
-            gravity: 9.8,
-            distance: 1.2,
-            noiseLevel: 1.0,
-            vortexSpeed: 1.0,
-            focalLength: 300
-        };
-
+        const config = { gravity: 9.8, distance: 1.2, noiseLevel: 1.0, vortexSpeed: 1.0, focalLength: 300 };
         const canvas = document.getElementById("nautilusCanvas");
         const ctx = canvas.getContext("2d");
+        let cx = window.innerWidth / 2, cy = window.innerHeight / 2, particles = [], localEntropy = 1.0, localDim = "T_3";
 
-        let cx = window.innerWidth / 2;
-        let cy = window.innerHeight / 2;
-        let particles = [];
-        let localEntropy = 1.0;
-        let localDim = "T_3";
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            cx = canvas.width / 2;
-            cy = canvas.height / 2;
-        }
-        window.addEventListener("resize", resize);
-        resize();
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; cx = canvas.width / 2; cy = canvas.height / 2; }
+        window.addEventListener("resize", resize); resize();
 
         class Particle {
-            constructor(type) {
-                this.type = type;
-                this.reset();
-            }
-
-            reset() {
-                this.angle = Math.random() * Math.PI * 2;
-                this.radius3d = Math.random() * 120 + 40;
-                this.z3d = Math.random() * 100 + 100;
-                this.speed = Math.random() * 0.01 + 0.005;
-                this.alpha = Math.random() * 0.5 + 0.5;
-                this.color = this.type === 'noise' ? '#ff3333' : '#56d364';
-            }
-
+            constructor(type) { this.type = type; this.reset(); }
+            reset() { this.angle = Math.random() * Math.PI * 2; this.radius3d = Math.random() * 120 + 40; this.z3d = Math.random() * 100 + 100; this.speed = Math.random() * 0.01 + 0.005; this.alpha = Math.random() * 0.5 + 0.5; this.color = this.type === 'noise' ? '#ff3333' : '#56d364'; }
             update() {
                 let distanceFactor = Math.max(5, this.z3d);
                 let pullForce = (config.gravity * 0.04) / (config.distance * (distanceFactor / 100));
-                
                 let currentSpeed = this.speed * (350 / (distanceFactor + 30));
                 this.angle += currentSpeed * config.vortexSpeed;
 
                 if (this.type === 'noise') {
-                    this.radius3d -= pullForce * 0.15;
-                    this.z3d -= pullForce * 0.2;
-                    this.radius3d += (Math.random() - 0.5) * 1.5;
-                    
-                    if (this.z3d < 115 * config.distance) {
-                        this.type = 'signal';
-                        this.color = '#56d364';
-                        this.speed = 0.006;
-                    }
+                    this.radius3d -= pullForce * 0.15; this.z3d -= pullForce * 0.2; this.radius3d += (Math.random() - 0.5) * 1.5;
+                    if (this.z3d < 115 * config.distance) { this.type = 'signal'; this.color = '#56d364'; this.speed = 0.006; }
                 } else {
-                    this.radius3d -= pullForce * 0.42;
-                    this.z3d -= pullForce * 0.55;
-
-                    if (this.z3d >= 95) {
-                        this.type = 'signal';
-                        this.color = '#56d364';
-                    } 
-                    else if (this.z3d < 95 && this.z3d >= 70) {
-                        this.type = 'cyber';
-                        this.color = '#00f3ff';
-                    } 
-                    else if (this.z3d < 70 && this.z3d >= 45) {
-                        this.type = 'mind';
-                        this.color = '#388bfd';
-                    } 
-                    else if (this.z3d < 45 && this.z3d >= 25) {
-                        this.type = 'cloud';
-                        this.color = '#ab47bc';
-                    } 
-                    else if (this.z3d < 25 && this.z3d >= 8) {
-                        this.type = 'nebula';
-                        this.color = '#ffffff';
-                        this.alpha = 0.3 + Math.sin(Date.now() * 0.02 + this.angle) * 0.2;
-                        this.radius3d += (Math.random() - 0.5) * 1.0;
-                    }
-                    else if (this.z3d < 8) {
-                        this.type = 'seed';
-                        this.color = '#d29922';
-                        this.alpha = 1;
-                        
-                        this.z3d = 1 + Math.sin(Date.now() * 0.08) * 0.4;
-                        this.radius3d = 2 + Math.cos(Date.now() * 0.08) * 0.4;
-
-                        if (Math.random() * 100 > 99.2) {
-                            this.reset();
-                        }
-                    }
-
+                    this.radius3d -= pullForce * 0.42; this.z3d -= pullForce * 0.55;
+                    if (this.z3d >= 95) this.type = 'signal';
+                    else if (this.z3d < 95 && this.z3d >= 70) { this.type = 'cyber'; this.color = '#00f3ff'; }
+                    else if (this.z3d < 70 && this.z3d >= 45) { this.type = 'mind'; this.color = '#388bfd'; }
+                    else if (this.z3d < 45 && this.z3d >= 25) { this.type = 'cloud'; this.color = '#ab47bc'; }
+                    else if (this.z3d < 25 && this.z3d >= 8) { this.type = 'nebula'; this.color = '#ffffff'; this.alpha = 0.3 + Math.sin(Date.now() * 0.02 + this.angle) * 0.2; this.radius3d += (Math.random() - 0.5) * 1.0; }
+                    else if (this.z3d < 8) { this.type = 'seed'; this.color = '#d29922'; this.alpha = 1; this.z3d = 1 + Math.sin(Date.now() * 0.08) * 0.4; this.radius3d = 2 + Math.cos(Date.now() * 0.08) * 0.4; if (Math.random() * 100 > 99.2) this.reset(); }
                     if (this.z3d < -10) this.reset();
                 }
-
-                // Локальный расчет усредненной энтропии для HUD на случай офлайна
-                if (this.type === 'seed') {
-                    localEntropy = localEntropy * 0.999 + 0.001 * 0.02;
-                } else {
-                    localEntropy = localEntropy * 0.999 + 0.001 * Math.min(1.0, this.z3d / 180);
-                }
-
-                let cosY = Math.cos(Math.PI / 2.8);
-                let sinY = Math.sin(Math.PI / 2.8);
-
-                let x3d = Math.cos(this.angle) * this.radius3d;
-                let y3d = Math.sin(this.angle) * this.radius3d;
-
-                let rotatedY = y3d * cosY - this.z3d * sinY;
-                this.rotatedZ = y3d * sinY + this.z3d * cosY;
-
+                localEntropy = this.type === 'seed' ? localEntropy * 0.999 + 0.001 * 0.02 : localEntropy * 0.999 + 0.001 * Math.min(1.0, this.z3d / 180);
+                let cosY = Math.cos(Math.PI / 2.8), sinY = Math.sin(Math.PI / 2.8), x3d = Math.cos(this.angle) * this.radius3d, y3d = Math.sin(this.angle) * this.radius3d;
+                let rotatedY = y3d * cosY - this.z3d * sinY; this.rotatedZ = y3d * sinY + this.z3d * cosY;
                 let scale = config.focalLength / (config.focalLength + this.rotatedZ);
-                
-                this.screenX = cx + x3d * scale;
-                this.screenY = cy + (rotatedY + 60) * scale; 
-
+                this.screenX = cx + x3d * scale; this.screenY = cy + (rotatedY + 60) * scale;
                 let baseSize = this.type === 'seed' ? 3.5 : (this.type === 'nebula' ? 3.5 : (this.type === 'cloud' ? 2.3 : 1.6));
                 this.projectedSize = baseSize * scale;
             }
-
             draw() {
                 if (this.projectedSize <= 0 || this.screenY > canvas.height || this.screenX > canvas.width) return;
-
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.beginPath();
-                ctx.arc(this.screenX, this.screenY, this.projectedSize, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.screenX, this.screenY, this.projectedSize, 0, Math.PI * 2); ctx.fillStyle = this.color;
                 let scale = config.focalLength / (config.focalLength + this.rotatedZ);
-                ctx.shadowBlur = this.type === 'seed' ? 14 * scale : (this.type === 'nebula' ? 8 * scale : 1 * scale);
-                ctx.shadowColor = this.color;
-                
-                ctx.fill();
-                ctx.restore();
+                ctx.shadowBlur = this.type === 'seed' ? 14 * scale : (this.type === 'nebula' ? 8 * scale : 1 * scale); ctx.shadowColor = this.color;
+                ctx.fill(); ctx.restore();
             }
         }
         const manifestoTexts = {
@@ -239,22 +156,33 @@
         const tabRu = document.getElementById("tab-ru");
         const tabEn = document.getElementById("tab-en");
         const manifestoText = document.getElementById("manifesto-text");
+        const readmeRedirect = document.getElementById("readme-redirect");
 
         function switchLanguage(lang) {
             if (lang === 'ru') {
                 tabRu.classList.add("active");
                 tabEn.classList.remove("active");
                 manifestoText.innerHTML = manifestoTexts.ru;
+                // Привязываем кнопку к русскому файлу репозитория
+                if (readmeRedirect) {
+                    readmeRedirect.href = "README_ru.md";
+                    readmeRedirect.innerText = "Открыть README_ru.md ↗";
+                }
             } else {
                 tabEn.classList.add("active");
                 tabRu.classList.remove("active");
                 manifestoText.innerHTML = manifestoTexts.en;
+                // Привязываем кнопку к английскому файлу репозитория
+                if (readmeRedirect) {
+                    readmeRedirect.href = "README_en.md";
+                    readmeRedirect.innerText = "Open README_en.md ↗";
+                }
             }
         }
 
         tabRu.addEventListener("click", () => switchLanguage('ru'));
         tabEn.addEventListener("click", () => switchLanguage('en'));
-        switchLanguage('ru'); // Стартуем на русском
+        switchLanguage('ru');
 
         function initParticles() {
             particles = [];
@@ -264,99 +192,17 @@
         }
 
         function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.22)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.22)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => p.update()); particles.sort((a, b) => b.rotatedZ - a.rotatedZ); particles.forEach(p => p.draw());
 
-            particles.forEach(p => p.update());
-            particles.sort((a, b) => b.rotatedZ - a.rotatedZ);
-            particles.forEach(p => p.draw());
-
-            // Обновляем HUD в локальном (автономном) режиме каждую итерацию анимации
-            // Если сокет подключится, эти значения перепишутся серверными метриками
-            const hudEpoch = document.getElementById("hud-epoch");
-            const hudEntropy = document.getElementById("hud-entropy");
-            const hudSieve = document.getElementById("hud-sieve");
-
-            if (hudEpoch && particles.length > 0) {
-                // Берем тип ведущей частицы конуса для отображения текущей эры
-                let leadType = particles[particles.length - 1].type;
-                hudEpoch.innerText = leadType.charAt(0).toUpperCase() + leadType.slice(1);
-            }
+            const hudEpoch = document.getElementById("hud-epoch"), hudEntropy = document.getElementById("hud-entropy"), hudSieve = document.getElementById("hud-sieve");
+            if (hudEpoch && particles.length > 0) { let leadType = particles[particles.length - 1].type; hudEpoch.innerText = leadType.charAt(0).toUpperCase() + leadType.slice(1); }
             if (hudEntropy) hudEntropy.innerText = localEntropy.toFixed(4);
-            
             if (hudSieve && !window.hasSocketData) {
-                if (Date.now() % 6000 < 2000) localDim = "T_3";
-                else if (Date.now() % 6000 < 4000) localDim = "T_5";
-                else localDim = "T_7";
+                if (Date.now() % 6000 < 2000) localDim = "T_3"; else if (Date.now() % 6000 < 4000) localDim = "T_5"; else localDim = "T_7";
                 hudSieve.innerHTML = `<span style="color:#00f3ff;">DIM: ${localDim} [LOCAL]</span><br>STEPS: 10 (NET: 0.0)`;
             }
-
             requestAnimationFrame(animate);
         }
 
-        window.onload = function() {
-            initParticles();
-            animate();
-        };
-        // ============================================================================
-        // WEB-HYBRID CONNECTIVITY BLOCK (PHASE V CLIENT)
-        // ============================================================================
-        window.hasSocketData = false;
-        const socket = new WebSocket("ws://localhost:8765");
-
-        socket.onopen = function(e) {
-            console.log("[Nautilus UI] Сетевой мост Фазы V активирован со страницы GitHub Pages.");
-            const gateEl = document.getElementById("hud-gate");
-            if (gateEl) {
-                gateEl.innerText = "ws://localhost:8765 [CONNECTED]";
-                gateEl.style.color = "#56d364";
-            }
-            
-            setInterval(() => {
-                if (socket.readyState === WebSocket.OPEN) {
-                    socket.send(JSON.stringify({
-                        id: "github_pages_mesh_node",
-                        gravity: config.gravity,
-                        distance: config.distance
-                    }));
-                }
-            }, 120);
-        };
-
-        socket.onmessage = function(event) {
-            window.hasSocketData = true;
-            const report = JSON.parse(event.data);
-            
-            const epochEl = document.getElementById("hud-epoch");
-            const entropyEl = document.getElementById("hud-entropy");
-            const sieveEl = document.getElementById("hud-sieve");
-
-            if (epochEl) epochEl.innerText = report.meta.type + " (" + report.meta.multiverse_dimension + ")";
-            if (entropyEl) entropyEl.innerText = report.physics.shannon_entropy.toFixed(4);
-            
-            if (sieveEl) {
-                const sieve = report.crypto_sieve_v5;
-                const dim = report.meta.multiverse_dimension;
-                const ratio = report.network.global_convergence_ratio;
-                
-                if (sieve.sieve_cracked) {
-                    sieveEl.innerHTML = `<span style="color:#d29922; font-weight:bold;">DIM: ${dim} [LOCKED]</span><br>` +
-                                        `SEED: ${sieve.extracted_multiverse_seed.join("-")} (NET: ${ratio})`;
-                } else {
-                    sieveEl.innerHTML = `<span style="color:#00f3ff;">DIM: ${dim} [ONLINE_SIEVE]</span><br>` +
-                                        `INTENSITY: ${sieve.intensity_steps} (NET: ${ratio})`;
-                }
-            }
-        };
-
-        socket.onerror = function(err) {
-            console.log("[Nautilus UI] Удаленный бэкенд не обнаружен. Переход в автономный режим.");
-            const gateEl = document.getElementById("hud-gate");
-            if (gateEl) {
-                gateEl.innerText = "offline (автономная симуляция)";
-                gateEl.style.color = "#ff3333";
-            }
-        };
-    </script>
-</body>
-</html>
+        window.onload = function() { initParticles(); animate(); };
