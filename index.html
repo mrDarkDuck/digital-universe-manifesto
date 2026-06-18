@@ -206,3 +206,25 @@
         }
 
         window.onload = function() { initParticles(); animate(); };
+                window.hasSocketData = false; const socket = new WebSocket("ws://localhost:8765");
+        socket.onopen = function(e) {
+            console.log("[Nautilus UI] Сетевой мост Фазы V активирован.");
+            const gateEl = document.getElementById("hud-gate"); if (gateEl) { gateEl.innerText = "ws://localhost:8765 [CONNECTED]"; gateEl.style.color = "#56d364"; }
+            setInterval(() => { if (socket.readyState === WebSocket.OPEN) { socket.send(JSON.stringify({ id: "github_pages_mesh_node", gravity: config.gravity, distance: config.distance })); } }, 120);
+        };
+        socket.onmessage = function(event) {
+            window.hasSocketData = true; const report = JSON.parse(event.data);
+            const epochEl = document.getElementById("hud-epoch"), entropyEl = document.getElementById("hud-entropy"), sieveEl = document.getElementById("hud-sieve");
+            if (epochEl) epochEl.innerText = report.meta.type + " (" + report.meta.multiverse_dimension + ")";
+            if (entropyEl) entropyEl.innerText = report.physics.shannon_entropy.toFixed(4);
+            if (sieveEl) {
+                const sieve = report.crypto_sieve_v5, dim = report.meta.multiverse_dimension, ratio = report.network.global_convergence_ratio;
+                if (sieve.sieve_cracked) { sieveEl.innerHTML = `<span style="color:#d29922; font-weight:bold;">DIM: ${dim} [LOCKED]</span><br>SEED: ${sieve.extracted_multiverse_seed.join("-")} (NET: ${ratio})`; }
+                else { sieveEl.innerHTML = `<span style="color:#00f3ff;">DIM: ${dim} [ONLINE_SIEVE]</span><br>INTENSITY: ${sieve.intensity_steps} (NET: ${ratio})`; }
+            }
+        };
+        socket.onerror = function(err) { const gateEl = document.getElementById("hud-gate"); if (gateEl) { gateEl.innerText = "offline (автономная симуляция)"; gateEl.style.color = "#ff3333"; } };
+    </script>
+</body>
+</html>
+
