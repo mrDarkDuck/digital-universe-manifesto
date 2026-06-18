@@ -499,6 +499,52 @@
         toggleLanguage();
         toggleLanguage();
     };
+    // Инициализация WebSocket соединения с бэкендом Nautilus
+const socket = new WebSocket("ws://localhost:8765");
+
+socket.onopen = function(e) {
+    console.log("[Nautilus UI] Канал Конвергенции с бэкендом успешно активирован.");
+    
+    // Каждые 100мс отправляем параметры симуляции для одной из ведущих нод
+    setInterval(() => {
+        if (socket.readyState === WebSocket.OPEN) {
+            const syncPacket = {
+                id: "mrdarkduck_node_01",
+                gravity: config.gravity,
+                distance: config.distance
+            };
+            socket.send(JSON.stringify(syncPacket));
+        }
+    }, 100);
+};
+
+socket.onmessage = function(event) {
+    // Получаем репорт от CryptoSieveV3 и ядра Конвергенции
+    const coreReport = JSON.parse(event.data);
+    
+    // ТОЧКА СКЛЕЙКИ: Вывод real-time метрик бэкенда на HUD-панель фронтенда
+    const epochElement = document.getElementById("hud-epoch");
+    const entropyElement = document.getElementById("hud-entropy");
+    const sieveElement = document.getElementById("hud-sieve");
+
+    if (epochElement) epochElement.innerText = coreReport.meta.type;
+    if (entropyElement) entropyElement.innerText = coreReport.physics.shannon_entropy.toFixed(4);
+    
+    if (sieveElement) {
+        if (coreReport.crypto_sieve_v3.sieve_cracked) {
+            sieveElement.innerText = "CRACKED // KEY: " + coreReport.crypto_sieve_v3.extracted_invariant_key.join("-");
+            sieveElement.style.color = "#d29922"; // Золотой цвет Огненного Семени
+        } else {
+            sieveElement.innerText = "ANALYSIS... STEPS: " + coreReport.crypto_sieve_v3.intensity_steps;
+            sieveElement.style.color = "#56d364";
+        }
+    }
+};
+
+socket.onerror = function(error) {
+    console.error(`[Nautilus UI] Ошибка канала связи: ${error.message}`);
+};
+
 </script>
 </body>
 </html>
