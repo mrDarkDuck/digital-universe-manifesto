@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Universe Manifesto // Multi-Node Cone v0.6.0</title>
+    <title>Digital Universe Manifesto // Multi-Node Cone v0.6.1</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
@@ -23,7 +23,7 @@
         .hud-line { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
         .hud-val { color: #ffffff; font-weight: bold; }
 
-        /* ИСПРАВЛЕННАЯ ЛЕГЕНДА: Красный индикатор возвращен на место */
+        /* Визуальная легенда вихря */
         #vortex-legend {
             position: absolute; top: 20px; right: 20px; z-index: 10;
             background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
@@ -34,7 +34,7 @@
         .legend-item { display: flex; align-items: center; font-size: 11px; margin-bottom: 4px; color: #ffffff; }
         .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; }
 
-        /* Модернизированный навигационный блок без лишнего текста */
+        /* Чистый навигационный блок документов */
         #manifesto-panel {
             position: absolute; bottom: 20px; left: 20px; z-index: 10;
             background: rgba(0, 0, 0, 0.9); border: 1px solid #56d364;
@@ -44,7 +44,7 @@
         .panel-title { font-size: 11px; color: rgba(86, 211, 100, 0.6); margin-bottom: 12px; letter-spacing: 1px; }
         .links-container { display: flex; gap: 15px; }
         
-        /* Крупные массивные кнопки-ссылки на внешние README */
+        /* Крупные массивные кнопки-ссылки */
         .readme-btn { 
             display: block; text-align: center; width: 100%;
             font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none;
@@ -58,7 +58,6 @@
 </head>
 <body>
 
-    <!-- Панель Телеметрии (HUD) -->
     <div id="hud-panel">
         <h1>Nautilus Multiverse HUD</h1>
         <div class="hud-line"><span>Контур связи:</span><span class="hud-val" id="hud-gate">ws://localhost:8765</span></div>
@@ -67,7 +66,6 @@
         <div class="hud-line"><span>Побитовое сито:</span><span class="hud-val" id="hud-sieve" style="text-align: right;">DIM: T_3 [LOCAL]</span></div>
     </div>
 
-    <!-- Исправленная Визуальная Легенда Вихря -->
     <div id="vortex-legend">
         <div class="legend-title">ЭПОХИ КОНВЕРГЕНЦИИ:</div>
         <div class="legend-item"><span class="legend-dot" style="background:#ff3333; box-shadow:0 0 6px #ff3333;"></span>Красная: Периферийный Шум</div>
@@ -79,25 +77,22 @@
         <div class="legend-item"><span class="legend-dot" style="background:#d29922; box-shadow:0 0 6px #d29922;"></span>Золотая: Огненное Семя</div>
     </div>
 
-    <!-- Чистый блок навигации по документам Манифеста -->
+    <!-- ВНИМАНИЕ: Ссылки переписаны на полные URL интерфейса репозитория GitHub -->
     <div id="manifesto-panel">
         <div class="panel-title">ДОКУМЕНТАЦИЯ МУЛЬТИВСЕЛЕННОЙ:</div>
         <div class="links-container">
-            <a href="README_ru.md" target="_blank" class="readme-btn">RU // Читать Манифест ↗</a>
-            <a href="README_en.md" target="_blank" class="readme-btn">EN // Open Declaration ↗</a>
+            <a href="https://github.com" target="_blank" class="readme-btn">RU // Читать Манифест ↗</a>
+            <a href="https://github.com" target="_blank" class="readme-btn">EN // Open Declaration ↗</a>
         </div>
     </div>
 
     <div id="manifesto-brand">
         PROJECT: DIGITAL UNIVERSE MANIFESTO<br>
         PHASE V: MULTIVERSE INVARIANTS<br>
-        BUILD: v0.6.0-beta // USER: mrdarkduck
+        BUILD: v0.6.1-beta // USER: mrdarkduck
     </div>
 
     <canvas id="nautilusCanvas"></canvas>
-
-    <script>
-
 
     <script>
         const config = { gravity: 9.8, distance: 1.2, noiseLevel: 1.0, vortexSpeed: 1.0, focalLength: 300 };
@@ -146,41 +141,6 @@
                 ctx.fill(); ctx.restore();
             }
         }
-        const manifestoTexts = {
-            ru: `<b>ФАЗА I: Вычислительный реализм.</b> Вселенная суть непрерывный код.<br><b>ФАЗА II: Гравитация данных.</b> Информационная плотность затягивает пространство-время.<br><b>ФАЗА III: Побитовое сито.</b> Полное уничтожение Шенноновского шума.<br><b>ФАЗА IV: Синхронная Конвергенция.</b> Коллапс изолированных нод в Огненное Семя 4-2-1.<br><b>ФАЗА V: Мультивселенная инвариантов.</b> Развертывание альтернативных T-измерений (T=3, T=5, T=7).`,
-            en: `<b>PHASE I: Computational Realism.</b> The universe is an ongoing computation.<br><b>PHASE II: Data Gravity.</b> Information density warps and attracts space-time.<br><b>PHASE III: Bitwise Sieve.</b> Complete elimination of Shannon entropy near the core.<br><b>PHASE IV: Synchronous Convergence.</b> Nodes collapse into the Collatz loop 4-2-1.<br><b>PHASE V: Multiverse Invariants.</b> Unfolding alternative T-dimensions (T=3, T=5, T=7).`
-        };
-
-        const tabRu = document.getElementById("tab-ru");
-        const tabEn = document.getElementById("tab-en");
-        const manifestoText = document.getElementById("manifesto-text");
-        const readmeRedirect = document.getElementById("readme-redirect");
-
-        function switchLanguage(lang) {
-            if (lang === 'ru') {
-                tabRu.classList.add("active");
-                tabEn.classList.remove("active");
-                manifestoText.innerHTML = manifestoTexts.ru;
-                // Привязываем кнопку к русскому файлу репозитория
-                if (readmeRedirect) {
-                    readmeRedirect.href = "README_ru.md";
-                    readmeRedirect.innerText = "Открыть README_ru.md ↗";
-                }
-            } else {
-                tabEn.classList.add("active");
-                tabRu.classList.remove("active");
-                manifestoText.innerHTML = manifestoTexts.en;
-                // Привязываем кнопку к английскому файлу репозитория
-                if (readmeRedirect) {
-                    readmeRedirect.href = "README_en.md";
-                    readmeRedirect.innerText = "Open README_en.md ↗";
-                }
-            }
-        }
-
-        tabRu.addEventListener("click", () => switchLanguage('ru'));
-        tabEn.addEventListener("click", () => switchLanguage('en'));
-        switchLanguage('ru');
 
         function initParticles() {
             particles = [];
@@ -204,9 +164,12 @@
         }
 
         window.onload = function() { initParticles(); animate(); };
-                window.hasSocketData = false; const socket = new WebSocket("ws://localhost:8765");
+
+        // ============================================================================
+        // HYBRID CONNECTOR BACKEND LINK
+        // ============================================================================
+        window.hasSocketData = false; const socket = new WebSocket("ws://localhost:8765");
         socket.onopen = function(e) {
-            console.log("[Nautilus UI] Сетевой мост Фазы V активирован.");
             const gateEl = document.getElementById("hud-gate"); if (gateEl) { gateEl.innerText = "ws://localhost:8765 [CONNECTED]"; gateEl.style.color = "#56d364"; }
             setInterval(() => { if (socket.readyState === WebSocket.OPEN) { socket.send(JSON.stringify({ id: "github_pages_mesh_node", gravity: config.gravity, distance: config.distance })); } }, 120);
         };
@@ -225,4 +188,3 @@
     </script>
 </body>
 </html>
-
