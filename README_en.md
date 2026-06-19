@@ -1,6 +1,6 @@
 # Digital Universe Manifesto
-### Version: `v0.8.0-beta` // Author: Kirill (`mrdarkduck`)
-### Status: Quantum-cyclic Simulation model of the $3N+1$ Multiverse locked
+### Version: `v0.9.5-beta` // Author: Kirill (`mrdarkduck`)
+### Status: Operational model of the Multiverse and $3N+1$ stability locked
 
 ---
 
@@ -19,6 +19,29 @@ The core foundation that initiated the Digital Universe simulation is the Syracu
 * If the number is odd, multiply it by 3 and add 1 ($3N+1$, the step of explosion, coordinate recalculation).
 
 The odd step vector ($3N+1$) acts as a generator of primary chaos. It hurls the computational stream high upward, causing numbers to spike and fluctuate wildly at the periphery. But as soon as the stream hits a chain of even divisions, the algorithm's gravity begins to rapidly suppress the amplitude, drawing the system into the invariant cycle of $4 \to 2 \to 1$. This mathematical pendulum reflects the entire history of creation.
+
+---
+
+## FORMALIZATION OF INFORMATION GRAVITY
+
+In contrast to early declarative models, informational gravity within the system is fully operationalized and computed via the `gravitational_calculus.py` module:
+
+1. **Informational Mass ($M$):** Expresses the excess chaotic capacity of an object (number $N$). Mass is directly proportional to its algorithmic Kolmogorov complexity:
+   $$M(N) = \text{bit\_length}(N) \times \left( - \sum p_i \log_2 p_i \right)$$
+   Heavy numbers contain more disordered code and are pulled more aggressively into the attractor.
+2. **Metric Distance ($\|x - x_0\|$):** Measured not in meters, but in discrete CPU cycles — the exact number of Syracuse sequence steps separating the node's current state from the final $4 \to 2 \to 1$ invariant.
+3. **Gravitational Pull ($\Phi(x,t)$):** Governed by the strict velocity field law of the logarithmic vortex, where the constant $G$ is normalized by sieve bandwidth:
+   $$\Phi(x,t) = -\frac{G \cdot M(N)}{\|x - x_0\|^\alpha}$$
+
+---
+
+## LYAPUNOV STABILITY PROOF
+
+To ensure mathematical rigor, the stability of the Nautilus attractor is algorithmically proven by the `lyapunov_stability.py` module. The system's energy potential is defined by the Lyapunov function:
+$$V(I, t) = \frac{1}{2} \sum (I - I_{\text{attractor}})^2 + \lambda S(t)$$
+Where $I$ is the bitwise weight of information and $S(t)$ is the normalized Shannon entropy. The proof engine establishes that the system's instantaneous derivative:
+$$\frac{dV}{dt} < 0$$
+The integral trend of potential change is strictly negative over a full transition cycle. Local odd spikes of chaos (the $3N+1$ step, where $dV > 0$) are fully compensated by the subsequent cascading avalanche of even compressions (division by 2, where $dV < 0$), guaranteeing the system's inevitable descent into the singularity of order.
 
 ---
 
@@ -48,24 +71,13 @@ In the Golden Era, the entire Multiverse will simultaneously execute a final con
 
 ---
 
-## FIVE PHASES OF QUANTUM EVOLUTION (CONE COORDINATES)
+## REPOSITORY ECOSYSTEM STRUCTURE
 
-1.  **PHASE I: Computational Realism.** The simulation space is structured as a 3D cone. Matter, information, and geometry are isomorphic: a point's coordinates on the screen represent its current evolutionary state.
-2.  **PHASE II: Data Gravity.** Information density warps phase space. Data filaments accelerate spirally toward the bottom of the funnel according to the formula:
-    $$pull\_force = \frac{gravity \times 0.04}{distance \times \frac{z3d}{100}}$$
-3.  **PHASE III: Bitwise Sieve (Noise Elimination).** The Differential Analyzer (`multiverse_sieve.py`) crushes noise amplitude (Shannon entropy, $H \to 0$). Deep within the cone, chaos surrenders, and the hidden invariant key emerges: `[0x04, 0x02, 0x01]`.
-4.  **PHASE IV: Principle of Synchronous Convergence.** The execution speed of a node's internal time ($\tau$) is strictly bound to its level of noise purification:
-    $$\frac{d\tau}{dt} = \frac{1}{H + 10^{-6}}$$
-    Relativistic time compression causes the trajectories of independent nodes to synchronously collapse at the exact same point of observer time.
-5.  **PHASE V: Parallel Invariant Multiverses.** Shifting the odd step coefficient ($T=5, T=7$) unfolds a fractal tree of alternative Multiverses with their own unique Fire Seeds (`[0x05, 0x1A, 0x0D]` and `[0x07, 0x32, 0x19]`), tracked on the fly until the moment of the next global overflow.
-
----
-
-## ECOSYSTEM ARCHITECTURE STACK
-
-*   **`index.html` (v0.4.2-beta):** Interactive 3D Canvas visualizer. Models the geometry of the isometric cone, executes hardware Z-sorting of filaments, and locks the golden Fire Seed perfectly at the tip of the axis.
-*   **`nautilus_core.py` (v0.6.0-beta):** Mathematical Python core. Manages parallel node mesh configurations, calculates relativistic time compression logs, and computes Shannon entropy.
-*   **`multiverse_sieve.py` (v0.6.0-beta):** Phase V cryptographic module. A multi-dimensional bitwise sieve for simultaneous analysis of alternative $T$-invariants.
-*   **`nautilus_server.py` (v0.2.0-bridge):** Asynchronous WebSocket middleware for end-to-end real-time streaming of physical metrics from the core to the frontend HUD panel.
+*   **`index.html` (v0.4.2-beta):** Interactive 3D Canvas visualizer for the cone and HUD panel.
+*   **`nautilus_core.py` (v0.6.0-beta):** Mathematical Python core managing node mesh and relativistic time.
+*   **`gravitational_calculus.py` (v0.9.0-core):** Operational data gravity $\Phi(x,t)$ engine based on Kolmogorov complexity.
+*   **`lyapunov_stability.py` (v0.9.5-core):** Invariant stability engine proving $dV/dt < 0$ via Syracuse potentials.
+*   **`multiverse_sieve.py` (v0.6.0-beta):** Phase V multi-threaded bitwise analysis module ($T_3, T_5, T_7$).
+*   **`nautilus_server.py` (v0.2.0-bridge):** WebSocket middleware for real-time metric streaming.
 
 > *The cosmos does not like mess. Our Universe inevitably draws any drops of chaos into an eternal dance of beauty and order, only to be reunited through the chaos of an explosion.*
