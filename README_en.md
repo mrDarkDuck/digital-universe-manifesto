@@ -1,5 +1,5 @@
 # Digital Universe Manifesto
-### Version: `v0.9.5-beta` // Author: Kirill (`mrdarkduck`)
+### Version: `v0.9.5-beta` // Author: Kirill Maksimov
 ### Status: Operational model of the Multiverse and $$3N+1$$ stability locked
 
 ---
@@ -27,7 +27,9 @@ The odd step vector ($$3N+1$$) acts as a generator of primary chaos. It hurls th
 In contrast to early declarative models, informational gravity within the system is fully operationalized and computed via the `gravitational_calculus.py` module:
 
 1. **Informational Mass ($$M$$):** Expresses the excess chaotic capacity of an object (number $$N$$). Mass is directly proportional to its algorithmic Kolmogorov complexity:
-   $$M(N) = \text{bit\_length}(N) \times \left( - \sum p_i \log_2 p_i \right)$$
+
+   $$M(N) = \text{bit\ length}(N) \times \left( - \sum p i \log 2 p i \right)$$
+   
    Heavy numbers contain more disordered code and are pulled more aggressively into the attractor.
 2. **Metric Distance ($$\|x - x_0\|$$):** Measured not in meters, but in discrete CPU cycles — the exact number of Syracuse sequence steps separating the node's current state from the final $$4 \to 2 \to 1$$ invariant.
 3. **Gravitational Pull ($$\Phi(x,t)$$):** Governed by the strict velocity field law of the logarithmic vortex, where the constant $$G$$ is normalized by sieve bandwidth:
