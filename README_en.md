@@ -86,8 +86,14 @@ In the Golden Era, the entire Multiverse will simultaneously execute a final con
 <script>
 MathJax = {
   tex: {
-    inlineMath: [['\\(','\\)']],
-    displayMath: [['$$','$$']]
+    inlineMath: [
+      ['$', '$'],
+      ['\\(', '\\)']
+    ],
+    displayMath: [
+      ['$$', '$$'],
+      ['\\[', '\\]']
+    ]
   }
 };
 </script>
