@@ -34,7 +34,6 @@ In contrast to early declarative models, informational gravity within the system
 2. **Metric Distance ($$\|x - x_0\|$$):** Measured not in meters, but in discrete CPU cycles — the exact number of Syracuse sequence steps separating the node's current state from the final $$4 \to 2 \to 1$$ invariant.
 3. **Gravitational Pull ($$\Phi(x,t)$$):** Governed by the strict velocity field law of the logarithmic vortex, where the constant $$G$$ is normalized by sieve bandwidth:
    $$\Phi(x,t) = -\frac{G \cdot M(N)}{\|x - x_0\|^\alpha}$$
-
 ---
 
 ## LYAPUNOV STABILITY PROOF
