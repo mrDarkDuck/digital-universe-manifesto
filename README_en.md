@@ -83,3 +83,11 @@ In the Golden Era, the entire Multiverse will simultaneously execute a final con
 *   **`nautilus_server.py` (v0.2.0-bridge):** WebSocket middleware for real-time metric streaming.
 
 > *The cosmos does not like mess. Our Universe inevitably draws any drops of chaos into an eternal dance of beauty and order, only to be reunited through the chaos of an explosion.*
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['$$','$$']]
+  }
+};
+</script>
