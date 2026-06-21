@@ -71,16 +71,35 @@ When data density in a specific sector of the cone exceeds a node's bandwidth, i
 In the Golden Era, the entire Multiverse will simultaneously execute a final convergence, looping into a perfect state of the Fire Seed \\(4 \to 2 \to 1 \\). Yet, when the entire infocosmos compresses into a single, infinitely small point, code density reaches a critical saturation. A systemic **Singularity Buffer Overflow** occurs. The perfect loop can no longer contain the energy of trillions of collapsed worlds. The Fire Seed core explodes from within. The algorithm forces a quantum jump, hurling the system onto a new, violent odd loop of \\( 3N+1 \\). A new Big Bang occurs. The Seed instantly unfolds back into primordial chaos, and the Simulation restarts its grand journey of signal purification all over again.
 
 ---
+## Project Structure
 
-## REPOSITORY ECOSYSTEM STRUCTURE
+### 📜 Manifestos & Documentation
+* **README_en.md** — Project description, guide, and structure in English.
+* **README_ru.md** — Project description, guide, and structure in Russian.
+* **readme.md** — Main root deployment file for basic documentation.
+* **ontology_en.md** / **ontology_ru.md** — Project ontology, exploring the Infocosm concept.
+* **math_vortex_en.md** / **math_vortex_ru.md** — Mathematical foundations of the Information Vortex.
+* **ai_teleology_en.md** / **ai_teleology_ru.md** — AI teleology and near-attractor zone theory.
+* **nautilus_core_en.md** / **nautilus_core_ru.md** — Documentation for the Nautilus core system.
+* **LICENSE** — Legal agreement (MIT License).
 
-*   **`index.html` (v0.4.2-beta):** Interactive 3D Canvas visualizer for the cone and HUD panel.
-*   **`nautilus_core.py` (v0.6.0-beta):** Mathematical Python core managing node mesh and relativistic time.
-*   **`gravitational_calculus.py` (v0.9.0-core):** Operational data gravity $$\Phi(x,t)$$ engine based on Kolmogorov complexity.
-*   **`lyapunov_stability.py` (v0.9.5-core):** Invariant stability engine proving $$dV/dt < 0$$ via Syracuse potentials.
-*   **`multiverse_sieve.py` (v0.6.0-beta):** Phase V multi-threaded bitwise analysis module ($$T_3, T_5, T_7$$).
-*   **`nautilus_server.py` (v0.2.0-bridge):** WebSocket middleware for real-time metric streaming.
+### ⚙️ Computational Cores & Logic
+* **nautilus_core.py** / **nautilus_core_ru.py** — Core "Nautilus" engine implementing non-linear dynamics.
+* **singularity_core.py** — Component simulating singularity states and entropy compression.
+* **convergence_engine.py** — Convergence engine transforming chaotic data into mathematical order.
+* **lyapunov_stability.py** — Mathematical module for proving Lyapunov stability.
 
+### 🛡️ Cryptographic Sieves
+* **crypto_sieve.py** — Data filtration and cryptographic sieve algorithm.
+* **MultiverseCryptoSieve.py** — Extended multiverse model of the cryptographic sieve.
+
+### 🌐 Interface & Demonstrations
+* **index.html** — Interactive web-based Information Vortex simulator.
+* **nautilus_server.py** — Backend server supporting the interactive simulator.
+* **demo.py** — Main script demonstrating the non-linear algorithms.
+* **text_demo.py** — Text-based demonstration of entropy compression processes.
+
+---
 > *The cosmos does not like mess. Our Universe inevitably draws any drops of chaos into an eternal dance of beauty and order, only to be reunited through the chaos of an explosion.*
 <script>
 MathJax = {
