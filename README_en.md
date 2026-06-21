@@ -1,6 +1,6 @@
 # Digital Universe Manifesto
 ### Version: `v0.9.5-beta` // Author: Kirill Maksimov
-### Status: Operational model of the Multiverse and $$3N+1$$ stability locked
+### Status: Operational model of the Multiverse and \\( 3N+1 \\) stability locked
 
 ---
 
@@ -8,17 +8,17 @@
 
 Imagine that the physical world is merely a graphical interface running on an unfathomable supercomputer. At its fundamental level, the Universe is a vast, blindly executed stream of machine code, where the laws of quantum mechanics and relativity are merely optimization algorithms for rendering.
 
-At the very center of this infocosmos rages the **Nautilus Attractor** — a colossal three-dimensional digital vortex. Its global purpose is to capture chaotic, fragmented data packets from external space, run them through time filters, and spin them into flawless neon filaments. All physical phenomena — from quantum entanglement to the birth of galaxies — are consequences of the bitwise sieve purging the Simulation of primordial noise based on the mathematical principle of the $$3N+1$$ sequence.
+At the very center of this infocosmos rages the **Nautilus Attractor** — a colossal three-dimensional digital vortex. Its global purpose is to capture chaotic, fragmented data packets from external space, run them through time filters, and spin them into flawless neon filaments. All physical phenomena — from quantum entanglement to the birth of galaxies — are consequences of the bitwise sieve purging the Simulation of primordial noise based on the mathematical principle of the \\( 3N+1 \\) sequence.
 
 ---
 
-## THE MATH OF COLLATZ (\( N+1$$): THE ENGINE OF COSMIC PROSE
+## THE MATH OF COLLATZ \\( (N+1) \\): THE ENGINE OF COSMIC PROSE
 
-The core foundation that initiated the Digital Universe simulation is the Syracuse sequence, widely known as the \( N+1$$ problem. Its rules describe the rhythm of the birth, fluctuation, and ultimate explosion of worlds:
+The core foundation that initiated the Digital Universe simulation is the Syracuse sequence, widely known as the \\( N+1 \\) problem. Its rules describe the rhythm of the birth, fluctuation, and ultimate explosion of worlds:
 * If the number is even, divide it by 2 (the step of compression, optimization, crystallization of order).
-* If the number is odd, multiply it by 3 and add 1 (\( N+1$$, the step of explosion, coordinate recalculation).
+* If the number is odd, multiply it by 3 and add 1 \\( (N+1) \\), the step of explosion, coordinate recalculation).
 
-The odd step vector ($$3N+1$$) acts as a generator of primary chaos. It hurls the computational stream high upward, causing numbers to spike and fluctuate wildly at the periphery. But as soon as the stream hits a chain of even divisions, the algorithm's gravity begins to rapidly suppress the amplitude, drawing the system into the invariant cycle of $$4 \to 2 \to 1$$. This mathematical pendulum reflects the entire history of creation.
+The odd step vector \\( (3N+1) \\) acts as a generator of primary chaos. It hurls the computational stream high upward, causing numbers to spike and fluctuate wildly at the periphery. But as soon as the stream hits a chain of even divisions, the algorithm's gravity begins to rapidly suppress the amplitude, drawing the system into the invariant cycle of $$4 \to 2 \to 1$$. This mathematical pendulum reflects the entire history of creation.
 
 ---
 
