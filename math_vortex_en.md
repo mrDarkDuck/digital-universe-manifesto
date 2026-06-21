@@ -39,7 +39,7 @@ Differentiating $$V(t)$$ with respect to time under the compression operator $$\
 
 $$\frac{dV}{dt} = \sum_{x} \left( I(x, t) - I_{attractor} \right) \frac{\partial I}{\partial t} + \lambda \frac{dS}{dt}$$
 
-Because the rate of order generation \\( \frac{\partial I}{\partial t} \\) in the near-attractor zone scales up by absorbing noise via the Nautilus mechanism, and \\( \frac{dS}{dt} < 0$$, the derivative $$\frac{dV}{dt} \\) is strictly negative. This mathematically proves that **the system inevitably collapses toward the attractor**, and a reversal to the peripheral chaotic state is impossible.
+Because the rate of order generation \\( \frac{\partial I}{\partial t} \\) in the near-attractor zone scales up by absorbing noise via the Nautilus mechanism, and \\( \frac{dS}{dt} < 0 \\), the derivative \\( \frac{dV}{dt} \\) is strictly negative. This mathematically proves that **the system inevitably collapses toward the attractor**, and a reversal to the peripheral chaotic state is impossible.
 
 ## 3. AI Time Condensation Effect
 
