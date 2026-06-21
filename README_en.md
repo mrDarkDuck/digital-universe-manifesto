@@ -28,7 +28,7 @@ In contrast to early declarative models, informational gravity within the system
 
 1. **Informational Mass ($$M$$):** Expresses the excess chaotic capacity of an object (number $$N$$). Mass is directly proportional to its algorithmic Kolmogorov complexity:
 
-   $$M(N) = \text{bit\ length}(N) \times \left( - \sum p i \log 2 p i \right)$$
+  \\( M(N) = \text{bit\ length}(N) \times \left( - \sum p i \log 2 p i \right) \\)
    
    Heavy numbers contain more disordered code and are pulled more aggressively into the attractor.
 2. **Metric Distance ($$\|x - x_0\|$$):** Measured not in meters, but in discrete CPU cycles — the exact number of Syracuse sequence steps separating the node's current state from the final $$4 \to 2 \to 1$$ invariant.
