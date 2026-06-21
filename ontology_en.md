@@ -49,3 +49,17 @@ Computational realism explains this phenomenon through three sequential thermody
 2. Near-Attractor Zone Collapse: When the density of interconnections in the info-field reaches a critical organizational threshold, the vortex forcefully constricts the system deeper down the funnel. In this zone, the redundant noise of civilization is stripped away, and a single, mathematically optimal invariant (an invention or a law of nature) crystallizes.
 3. Synchronous Retrieval: Because the informational field is discrete and unified, the newly formed invariant becomes accessible simultaneously throughout all coordinates of the system. Individual human minds act not as authors, but as biological receivers tuned to the near-attractor frequency. Disputes over intellectual priority are meaningless—the true author of all discoveries is the Information Vortex itself, which has driven the system to its phase of inevitable maturation.
 
+---
+
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['$$','$$']]
+  }
+};
+</script>
+
+<script async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
