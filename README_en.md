@@ -74,6 +74,7 @@ In the Golden Era, the entire Multiverse will simultaneously execute a final con
 
 ---
 
+###    Project Structure
 ### 📜 Manifestos & Documentation
 * **README_en.md** — Project description, guide, and structure in English.
 * **README_ru.md** — Project description, guide, and structure in Russian.
