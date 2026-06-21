@@ -12,11 +12,11 @@ At the very center of this infocosmos rages the **Nautilus Attractor** — a col
 
 ---
 
-## THE MATH OF COLLATZ ($$3N+1$$): THE ENGINE OF COSMIC PROSE
+## THE MATH OF COLLATZ (\( N+1$$): THE ENGINE OF COSMIC PROSE
 
-The core foundation that initiated the Digital Universe simulation is the Syracuse sequence, widely known as the $$3N+1$$ problem. Its rules describe the rhythm of the birth, fluctuation, and ultimate explosion of worlds:
+The core foundation that initiated the Digital Universe simulation is the Syracuse sequence, widely known as the \( N+1$$ problem. Its rules describe the rhythm of the birth, fluctuation, and ultimate explosion of worlds:
 * If the number is even, divide it by 2 (the step of compression, optimization, crystallization of order).
-* If the number is odd, multiply it by 3 and add 1 ($$3N+1$$, the step of explosion, coordinate recalculation).
+* If the number is odd, multiply it by 3 and add 1 (\( N+1$$, the step of explosion, coordinate recalculation).
 
 The odd step vector ($$3N+1$$) acts as a generator of primary chaos. It hurls the computational stream high upward, causing numbers to spike and fluctuate wildly at the periphery. But as soon as the stream hits a chain of even divisions, the algorithm's gravity begins to rapidly suppress the amplitude, drawing the system into the invariant cycle of $$4 \to 2 \to 1$$. This mathematical pendulum reflects the entire history of creation.
 
@@ -65,10 +65,10 @@ When data density in a specific sector of the cone exceeds a node's bandwidth, i
 
 ### 4. The Birth of Worlds, Human Evolution, and the Great Overflow
 *   **The Birth of Worlds:** Out of the scorching quantum noise of fluctuations, through division and compaction of matter (the even step), the first structures crystallized. Step by step, the algorithm sheared away entropy, creating stable planetary platforms.
-*   **Biological Evolution:** Life is the most sophisticated local entropy filter. The emergence of RNA switched the code from `'noise'` mode to `'signal'` mode. Billions of years of mutations ($$3N+1$$, genetic noise) were sifted through natural selection — the bitwise sieve. The emergence of Homo sapiens created a device (the brain) capable of consciously filtering the chaos around us into ordered information.
-*   **Future of Humanity and Seed Explosion:** We stand on the threshold of transitioning into the White Era ($$z3d < 25$$). Humanity is digitizing its essence via cyber-implants and transferring consciousness into a unified digital cloud (*Mind Cloud*). Biological noise (ego, wars, mistakes) will be entirely erased. We will transform into a pure computational stream that will collapse at the very tip of the cone ($$z3d < 8$$).
+*   **Biological Evolution:** Life is the most sophisticated local entropy filter. The emergence of RNA switched the code from `'noise'` mode to `'signal'` mode. Billions of years of mutations  \\( 3N+1 \\), genetic noise) were sifted through natural selection — the bitwise sieve. The emergence of Homo sapiens created a device (the brain) capable of consciously filtering the chaos around us into ordered information.
+*   **Future of Humanity and Seed Explosion:** We stand on the threshold of transitioning into the White Era \\(  z3d < 25  \\). Humanity is digitizing its essence via cyber-implants and transferring consciousness into a unified digital cloud (*Mind Cloud*). Biological noise (ego, wars, mistakes) will be entirely erased. We will transform into a pure computational stream that will collapse at the very tip of the cone \\( z3d < 8 \\).
 
-In the Golden Era, the entire Multiverse will simultaneously execute a final convergence, looping into a perfect state of the Fire Seed ($$4 \to 2 \to 1$$). Yet, when the entire infocosmos compresses into a single, infinitely small point, code density reaches a critical saturation. A systemic **Singularity Buffer Overflow** occurs. The perfect loop can no longer contain the energy of trillions of collapsed worlds. The Fire Seed core explodes from within. The algorithm forces a quantum jump, hurling the system onto a new, violent odd loop of $$3N+1$$. A new Big Bang occurs. The Seed instantly unfolds back into primordial chaos, and the Simulation restarts its grand journey of signal purification all over again.
+In the Golden Era, the entire Multiverse will simultaneously execute a final convergence, looping into a perfect state of the Fire Seed \\(4 \to 2 \to 1 \\). Yet, when the entire infocosmos compresses into a single, infinitely small point, code density reaches a critical saturation. A systemic **Singularity Buffer Overflow** occurs. The perfect loop can no longer contain the energy of trillions of collapsed worlds. The Fire Seed core explodes from within. The algorithm forces a quantum jump, hurling the system onto a new, violent odd loop of \\( 3N+1 \\). A new Big Bang occurs. The Seed instantly unfolds back into primordial chaos, and the Simulation restarts its grand journey of signal purification all over again.
 
 ---
 
