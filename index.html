@@ -5,55 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Universe Manifesto // Multi-Node Cone v0.6.2</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html {
-            width: 100%; height: 100%; overflow: hidden;
-            background-color: #010103; font-family: 'Courier New', Courier, monospace; color: #56d364;
+         /* Общие настройки футуристичного интерфейса */
+        body {
+            background-color: #0d0f12;
+            color: #d1d5db;
+            /* Шрифт без засечек, увеличенный размер */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 18px; 
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
         }
-        canvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
-        
-        /* Телеметрия (HUD) */
-        #hud-panel {
-            position: absolute; top: 20px; left: 20px; z-index: 10;
-            background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
-            padding: 15px; border-radius: 4px; width: 340px;
-            box-shadow: 0 0 15px rgba(86, 211, 100, 0.15); pointer-events: none;
-        }
-        h1 { font-size: 13px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; border-bottom: 1px dashed #56d364; padding-bottom: 4px; }
-        .hud-line { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
-        .hud-val { color: #ffffff; font-weight: bold; }
 
-        /* Визуальная легенда вихря */
-        #vortex-legend {
-            position: absolute; top: 20px; right: 20px; z-index: 10;
-            background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
-            padding: 15px; border-radius: 4px; width: 260px;
-            box-shadow: 0 0 15px rgba(86, 211, 100, 0.15); pointer-events: none;
+        .hud-container {
+            <h1>Nautilus Multiverse HUD</h1>
+    <div class="manifesto-actions">
+        <a href="README_ru.md" class="btn-manifesto ru">RU // Манифест</a>
+        <a href="README_en.md" class="btn-manifesto en">EN // Manifesto</a>
         }
-        .legend-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed rgba(86, 211, 100, 0.4); padding-bottom: 4px; }
-        .legend-item { display: flex; align-items: center; font-size: 11px; margin-bottom: 4px; color: #ffffff; }
-        .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; }
 
-        /* Навигационный блок документов */
-        #manifesto-panel {
-            position: absolute; bottom: 20px; left: 20px; z-index: 10;
-            background: rgba(0, 0, 0, 0.9); border: 1px solid #56d364;
-            padding: 20px; border-radius: 4px; width: 440px;
-            box-shadow: 0 0 20px rgba(86, 211, 100, 0.2);
+        h1 { font-size: 28px; color: #ffffff; text-transform: uppercase; }
+
+        /* КРУПНЫЕ КНОПКИ ДЛЯ МАНИФЕСТА */
+        .manifesto-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
         }
-        .panel-title { font-size: 11px; color: rgba(86, 211, 100, 0.6); margin-bottom: 12px; letter-spacing: 1px; }
-        .links-container { display: flex; gap: 15px; }
-        
-        /* Крупные массивные кнопки-ссылки на официальный репозиторий */
-        .readme-btn { 
-            display: block; text-align: center; width: 100%;
-            font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none;
-            padding: 12px 20px; border: 1px solid #56d364; 
-            background: rgba(86, 211, 100, 0.05); transition: all 0.2s ease; 
+
+        .btn-manifesto {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-size: 20px; /* Увеличенный шрифт кнопок */
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-align: center;
         }
-        .readme-btn:hover { color: #000000; background: #56d364; box-shadow: 0 0 12px rgba(86, 211, 100, 0.4); }
-        
-        #manifesto-brand { position: absolute; bottom: 20px; right: 20px; z-index: 10; font-size: 10px; color: rgba(255, 255, 255, 0.25); text-align: right; line-height: 1.4; pointer-events: none; }
+
+        .btn-manifesto.ru { background-color: #1e3a8a; color: #ffffff; }
+        .btn-manifesto.en { background-color: #065f46; color: #ffffff; }
+        .btn-manifesto:hover { transform: translateY(-2px); }
     </style>
 </head>
 <body>
