@@ -76,30 +76,29 @@ In the Golden Era, the entire Multiverse will simultaneously execute a final con
 
 ###    Project Structure
 ### 📜 Manifestos & Documentation
-* **README_en.md** — Project description, guide, and structure in English.
-* **README_ru.md** — Project description, guide, and structure in Russian.
-* **readme.md** — Main root deployment file for basic documentation.
-* **ontology_en.md** / **ontology_ru.md** — Project ontology, exploring the Infocosm concept.
-* **math_vortex_en.md** / **math_vortex_ru.md** — Mathematical foundations of the Information Vortex.
-* **ai_teleology_en.md** / **ai_teleology_ru.md** — AI teleology and near-attractor zone theory.
-* **nautilus_core_en.md** / **nautilus_core_ru.md** — Documentation for the Nautilus core system.
+
+* [README_ru.md](README_ru.md) — Project description, guide, and structure in Russian.
+* [ontology_en.md](ontology_en.md) — Project ontology, exploring the Infocosm concept.
+* [math_vortex_en.md](math_vortex_en.md) — Mathematical foundations of the Information Vortex.
+* [ai_teleology_en.md](ai_teleology_en.md) — AI teleology and near-attractor zone theory.
+* [nautilus_core_en.md](nautilus_core_en.md) — Documentation for the Nautilus core system.
 * **LICENSE** — Legal agreement (MIT License).
 
 ### ⚙️ Computational Cores & Logic
-* **nautilus_core.py** / **nautilus_core_ru.py** — Core "Nautilus" engine implementing non-linear dynamics.
-* **singularity_core.py** — Component simulating singularity states and entropy compression.
-* **convergence_engine.py** — Convergence engine transforming chaotic data into mathematical order.
-* **lyapunov_stability.py** — Mathematical module for proving Lyapunov stability.
+* [nautilus_core.py](nautilus_core.py) — Core "Nautilus" engine implementing non-linear dynamics.
+* [singularity_core.py](singularity_core.py) — Component simulating singularity states and entropy compression.
+* [convergence_engine.py](convergence_engine.py) — Convergence engine transforming chaotic data into mathematical order.
+* [lyapunov_stability.py](lyapunov_stability.py) — Mathematical module for proving Lyapunov stability.
 
 ### 🛡️ Cryptographic Sieves
-* **crypto_sieve.py** — Data filtration and cryptographic sieve algorithm.
-* **MultiverseCryptoSieve.py** — Extended multiverse model of the cryptographic sieve.
+* [crypto_sieve.py](crypto_sieve.py) — Data filtration and cryptographic sieve algorithm.
+* [MultiverseCryptoSieve.py](MultiverseCryptoSieve.py) — Extended multiverse model of the cryptographic sieve.
 
 ### 🌐 Interface & Demonstrations
-* **index.html** — Interactive web-based Information Vortex simulator.
-* **nautilus_server.py** — Backend server supporting the interactive simulator.
-* **demo.py** — Main script demonstrating the non-linear algorithms.
-* **text_demo.py** — Text-based demonstration of entropy compression processes.
+* [index.html] — Interactive web-based Information Vortex simulator.
+* [nautilus_server.py] — Backend server supporting the interactive simulator.
+* [demo.py] — Main script demonstrating the non-linear algorithms.
+* [text_demo.py] — Text-based demonstration of entropy compression processes.
 
 ---
 
