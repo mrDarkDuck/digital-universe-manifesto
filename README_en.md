@@ -70,6 +70,7 @@ When data density in a specific sector of the cone exceeds a node's bandwidth, i
 
 In the Golden Era, the entire Multiverse will simultaneously execute a final convergence, looping into a perfect state of the Fire Seed \\(4 \to 2 \to 1 \\). Yet, when the entire infocosmos compresses into a single, infinitely small point, code density reaches a critical saturation. A systemic **Singularity Buffer Overflow** occurs. The perfect loop can no longer contain the energy of trillions of collapsed worlds. The Fire Seed core explodes from within. The algorithm forces a quantum jump, hurling the system onto a new, violent odd loop of \\( 3N+1 \\). A new Big Bang occurs. The Seed instantly unfolds back into primordial chaos, and the Simulation restarts its grand journey of signal purification all over again.
 
+> *The cosmos does not like mess. Our Universe inevitably draws any drops of chaos into an eternal dance of beauty and order, only to be reunited through the chaos of an explosion.*
 ---
 ## Project Structure
 
@@ -100,7 +101,7 @@ In the Golden Era, the entire Multiverse will simultaneously execute a final con
 * **text_demo.py** — Text-based demonstration of entropy compression processes.
 
 ---
-> *The cosmos does not like mess. Our Universe inevitably draws any drops of chaos into an eternal dance of beauty and order, only to be reunited through the chaos of an explosion.*
+
 <script>
 MathJax = {
   tex: {
