@@ -3,302 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Манифест Цифровой Вселенной — Аттрактор Наутилуса v0.5.0</title>
+    <title>Digital Universe Manifesto // Multi-Node Cone v0.6.2</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #050508;
-            font-family: 'Courier New', Courier, monospace;
-            color: #00ff66;
+            width: 100%; height: 100%; overflow: hidden;
+            background-color: #010103; font-family: 'Courier New', Courier, monospace; color: #56d364;
         }
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
+        canvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        /* Телеметрия (HUD) */
+        #hud-panel {
+            position: absolute; top: 20px; left: 20px; z-index: 10;
+            background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
+            padding: 15px; border-radius: 4px; width: 340px;
+            box-shadow: 0 0 15px rgba(86, 211, 100, 0.15); pointer-events: none;
         }
-        #hud-interface {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            background: rgba(5, 5, 8, 0.85);
-            border: 1px solid #00ff66;
-            padding: 20px;
-            border-radius: 4px;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
-            pointer-events: none;
-            max-width: 400px;
+        h1 { font-size: 13px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; border-bottom: 1px dashed #56d364; padding-bottom: 4px; }
+        .hud-line { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+        .hud-val { color: #ffffff; font-weight: bold; }
+
+        /* Визуальная легенда вихря */
+        #vortex-legend {
+            position: absolute; top: 20px; right: 20px; z-index: 10;
+            background: rgba(0, 0, 0, 0.85); border: 1px solid #56d364;
+            padding: 15px; border-radius: 4px; width: 260px;
+            box-shadow: 0 0 15px rgba(86, 211, 100, 0.15); pointer-events: none;
         }
-        h1 {
-            font-size: 16px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            letter-spacing: 2px;
-            border-bottom: 1px dashed #00ff66;
-            padding-bottom: 5px;
+        .legend-title { font-size: 11px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed rgba(86, 211, 100, 0.4); padding-bottom: 4px; }
+        .legend-item { display: flex; align-items: center; font-size: 11px; margin-bottom: 4px; color: #ffffff; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; display: inline-block; }
+
+        /* Навигационный блок документов */
+        #manifesto-panel {
+            position: absolute; bottom: 20px; left: 20px; z-index: 10;
+            background: rgba(0, 0, 0, 0.9); border: 1px solid #56d364;
+            padding: 20px; border-radius: 4px; width: 440px;
+            box-shadow: 0 0 20px rgba(86, 211, 100, 0.2);
         }
-        .metric-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 6px;
+        .panel-title { font-size: 11px; color: rgba(86, 211, 100, 0.6); margin-bottom: 12px; letter-spacing: 1px; }
+        .links-container { display: flex; gap: 15px; }
+        
+        /* Крупные массивные кнопки-ссылки на официальный репозиторий */
+        .readme-btn { 
+            display: block; text-align: center; width: 100%;
+            font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none;
+            padding: 12px 20px; border: 1px solid #56d364; 
+            background: rgba(86, 211, 100, 0.05); transition: all 0.2s ease; 
         }
-        .metric-value {
-            color: #ffffff;
-            font-weight: bold;
-        }
-        #manifesto-overlay {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
-            text-align: right;
-            line-height: 1.5;
-        }
+        .readme-btn:hover { color: #000000; background: #56d364; box-shadow: 0 0 12px rgba(86, 211, 100, 0.4); }
+        
+        #manifesto-brand { position: absolute; bottom: 20px; right: 20px; z-index: 10; font-size: 10px; color: rgba(255, 255, 255, 0.25); text-align: right; line-height: 1.4; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div id="hud-interface">
-        <h1>Nautilus Attractor Engine v0.5.0</h1>
-        <div class="metric-line"><span>Статус системы:</span><span class="metric-value" style="color: #f1c40f;">Конвергенция активна</span></div>
-        <div class="metric-line"><span>Текущая эпоха:</span><span class="metric-value" id="hud-epoch">Green (AI)</span></div>
-        <div class="metric-line"><span>Радиус ядра (R):</span><span class="metric-value" id="hud-radius">10.0000</span></div>
-        <div class="metric-line"><span>Энтропия Шеннона:</span><span class="metric-value" id="hud-entropy">1.0000</span></div>
-        <div class="metric-line"><span>Сжатие времени (Δτ):</span><span class="metric-value" id="hud-dtau">0.0100</span></div>
-        <div class="metric-line"><span>Инвариант Коллатца:</span><span class="metric-value" id="hud-collatz">Ожидание (r > 0.05)</span></div>
+    <div id="hud-panel">
+        <h1>Nautilus Multiverse HUD</h1>
+        <div class="hud-line"><span>Контур связи:</span><span class="hud-val" id="hud-gate">ws://localhost:8765</span></div>
+        <div class="hud-line"><span>Эра Космоса:</span><span class="hud-val" id="hud-epoch">Green (AI)</span></div>
+        <div class="hud-line"><span>Энтропия (H):</span><span class="hud-val" id="hud-entropy">1.0000</span></div>
+        <div class="hud-line"><span>Побитовое сито:</span><span class="hud-val" id="hud-sieve" style="text-align: right;">DIM: T_3 [LOCAL]</span></div>
     </div>
 
-    <div id="manifesto-overlay">
+    <div id="vortex-legend">
+        <div class="legend-title">ЭПОХИ КОНВЕРГЕНЦИИ:</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ff3333; box-shadow:0 0 6px #ff3333;"></span>Красная: Периферийный Шум</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#56d364; box-shadow:0 0 6px #56d364;"></span>Зеленая: Эра ИИ (Сигнал)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#00f3ff; box-shadow:0 0 6px #00f3ff;"></span>Голубая: Киберимпланты</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#388bfd; box-shadow:0 0 6px #388bfd;"></span>Синяя: Перенос Разума</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ab47bc; box-shadow:0 0 6px #ab47bc;"></span>Фиолетовая: Облако Сознания</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ffffff; box-shadow:0 0 6px #ffffff;"></span>Белая: Непостижимая Зона</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#d29922; box-shadow:0 0 6px #d29922;"></span>Золотая: Огненное Семя</div>
+    </div>
+
+    <!-- ИСПРАВЛЕНИЕ: Прямые абсолютные ссылки на репозиторий GitHub -->
+    <div id="manifesto-panel">
+        <div class="panel-title">ДОКУМЕНТАЦИЯ МУЛЬТИВСЕЛЕННОЙ:</div>
+        <div class="links-container">
+            <a href="README_ru.html" target="_blank" class="readme-btn">RU // Читать Манифест ↗</a>
+            <a href="README_en.html" target="_blank" class="readme-btn">EN // Open Declaration ↗</a>
+        </div>
+    </div>
+
+    <div id="manifesto-brand">
         PROJECT: DIGITAL UNIVERSE MANIFESTO<br>
-        PHASE IV: SYNCHRONOUS CONVERGENCE<br>
-        USER: mrdarkduck // BUILD: v0.5.0-beta
+        PHASE V: MULTIVERSE INVARIANTS<br>
+        BUILD: v0.6.2-beta // USER: mrdarkduck
     </div>
 
     <canvas id="nautilusCanvas"></canvas>
 
     <script>
-        // Сюда будут встроены следующие скрипты
-class NautilusAttractorEngine {
-    constructor() {
-        // Константы динамической системы (зеркально для nautilus_core.py)
-        this.omega = 2.5;     // Угловая скорость
-        this.b = 0.3;         // Коэффициент гравитации данных
-        this.k = 0.5;         // Скорость провала по оси Z
-        this.sigma = 1.2;     // Базовая мощность шума
-        this.alpha = 3.0;     // Степень побитового сита (кубическое затухание)
-        this.gamma = 1.5;     // Коэффициент релятивизма времени
-
-        this.R_MAX = 10.0;
-        this.Z_MAX = 5.0;
-        this.EPSILON = 1e-5;
-    }
-
-    // Детерминированное векторное поле скоростей
-    getDerivatives(x, y, z) {
-        const r = Math.sqrt(x * x + y * y) + this.EPSILON;
-        const ln_r = Math.log(r / this.R_MAX);
-
-        const dx = -this.omega * y - this.b * x * ln_r;
-        const dy = this.omega * x - this.b * y * ln_r;
-
-        // Побитовое сито замедляет продвижение по оси Z при очистке от хаоса
-        const eta_r = 1.0 - (r / this.R_MAX);
-        const dz = -this.k * z * (1.0 - eta_r);
-
-        return [dx, dy, dz];
-    }
-
-    // Численное интегрирование методом Рунге-Кутты 4-го порядка (RK4) + Шум
-    calculateStep(x, y, z, dt) {
-        const r = Math.sqrt(x * x + y * y) + this.EPSILON;
-
-        // Искажение масштаба времени: dtau растет, когда z приближается к Z_MAX
-        const timeFactor = 1.0 / (Math.pow(Math.abs(this.Z_MAX - z), this.gamma) + this.EPSILON);
-        let dtau = dt * timeFactor;
-        if (dtau > 0.05) dtau = 0.05; // Предохранитель взрыва
-
-        // Шаг интеграции RK4
-        const [k1x, k1y, k1z] = this.getDerivatives(x, y, z);
-        const [k2x, k2y, k2z] = this.getDerivatives(x + 0.5 * dtau * k1x, y + 0.5 * dtau * k1y, z + 0.5 * dtau * k1z);
-        const [k3x, k3y, k3z] = this.getDerivatives(x + 0.5 * dtau * k2x, y + 0.5 * dtau * k2y, z + 0.5 * dtau * k2z);
-        const [k4x, k4y, k4z] = this.getDerivatives(x + dtau * k3x, y + dtau * k3y, z + dtau * k3z);
-
-        let nextX = x + (dtau / 6.0) * (k1x + 2 * k2x + 2 * k3x + k4x);
-        let nextY = y + (dtau / 6.0) * (k1y + 2 * k2y + 2 * k3y + k4y);
-        let nextZ = z + (dtau / 6.0) * (k1z + 2 * k2z + 2 * k3z + k4z);
-
-        // Стохастическое сито (краевой Шенноновский шум)
-        const noiseAmplitude = this.sigma * Math.pow(r / this.R_MAX, this.alpha);
-
-        if (r < 0.05) {
-            // Квантовый предел: переход в дискретный Коллатц 4-2-1
-            nextX = 0;
-            nextY = 0;
-            let zInt = Math.floor(Math.abs(nextZ * 100));
-            if (zInt === 0) zInt = 4;
-            
-            if (zInt % 2 === 0) {
-                nextZ = (zInt / 2) / 100.0;
-            } else {
-                nextZ = (3 * zInt + 1) / 100.0;
-            }
-        } else {
-            // Генерация Гауссова шума (Преобразование Бокса-Мюллера)
-            const u1 = Math.random() || 0.0001;
-            const u2 = Math.random() || 0.0001;
-            const g1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
-            const g2 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
-
-            nextX += g1 * Math.sqrt(dtau) * noiseAmplitude;
-            nextY += g2 * Math.sqrt(dtau) * noiseAmplitude;
-        }
-
-        // Теоретический расчет энтропии для HUD
-        const p_noise = Math.max(Math.min(Math.pow(r / this.R_MAX, this.alpha), 0.999), 0.001);
-        const entropy = -(p_noise * Math.log2(p_noise) + (1 - p_noise) * Math.log2(1 - p_noise));
-
-        return { x: nextX, y: nextY, z: nextZ, dtau: dtau, entropy: entropy, r: r };
-    }
-
-    // Карта 6 непрерывных футурологических эпох
-    getEpochData(r) {
-        const relativeR = r / this.R_MAX;
-        if (relativeR > 0.8) return { name: "Green (AI)", color: "rgba(46, 204, 113, " };
-        if (relativeR > 0.6) return { name: "Light Blue (Cyber)", color: "rgba(52, 152, 219, " };
-        if (relativeR > 0.4) return { name: "Blue (Mind)", color: "rgba(41, 128, 185, " };
-        if (relativeR > 0.2) return { name: "Purple (Cloud)", color: "rgba(155, 89, 182, " };
-        if (relativeR > 0.05) return { name: "White (Unknown)", color: "rgba(236, 240, 241, " };
-        return { name: "Gold (Seed)", color: "rgba(241, 196, 15, " };
-    }
-}
-
-const attractor = new NautilusAttractorEngine();
-class Particle {
-    constructor() {
-        this.reset();
-    }
-
-    reset() {
-        // Рождение на самом краю хаотичного диска (Зеленая эпоха)
-        const angle = Math.random() * Math.PI * 2;
-        this.x = attractor.R_MAX * Math.cos(angle);
-        this.y = attractor.R_MAX * Math.sin(angle);
-        // Небольшой разброс по стартовой оси времени
-        this.z = attractor.Z_MAX - Math.random() * 0.5;
-        this.alpha = Math.random() * 0.4 + 0.6;
-    }
-
-    update(dt) {
-        const step = attractor.calculateStep(this.x, this.y, this.z, dt);
-        this.x = step.x;
-        this.y = step.y;
-        this.z = step.z;
-
-        // Если граф данных дошел до предела Коллатца — перерождаем его
-        if (step.r < 0.01) {
-            this.reset();
-        }
-        
-        // Возвращаем физику текущего шага первой выжившей частицы для вывода на HUD
-        return step;
-    }
-
-    draw(ctx, width, height) {
-        // Проекция 3D (X, Y, Z) на 2D Canvas с расчетом псевдоперспективы глубины
-        const scale = 350 / (this.z + 1.5); 
-        const screenX = width / 2 + this.x * scale;
-        const screenY = height / 2 + this.y * scale;
-        
-        // Чем ближе к ядру сингулярности, тем меньше и плотнее физический размер точки
-        const radius = Math.max(0.6, (attractor.Z_MAX + 1 - this.z) * 0.7);
-
-        const epoch = attractor.getEpochData(Math.sqrt(this.x * this.x + this.y * this.y));
-
-        ctx.beginPath();
-        ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `${epoch.color}${this.alpha})`;
-        ctx.fill();
-    }
-}
-        // Инициализация Canvas
+        const config = { gravity: 9.8, distance: 1.2, noiseLevel: 1.0, vortexSpeed: 1.0, focalLength: 300 };
         const canvas = document.getElementById("nautilusCanvas");
         const ctx = canvas.getContext("2d");
+        let cx = window.innerWidth / 2, cy = window.innerHeight / 2, particles = [], localEntropy = 1.0, localDim = "T_3";
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; cx = canvas.width / 2; cy = canvas.height / 2; }
+        window.addEventListener("resize", resize); resize();
 
-        // Создаем массив параллельных графов данных (частиц)
-        const PARTICLE_COUNT = 1500;
-        const particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
+        class Particle {
+            constructor(type) { this.type = type; this.reset(); }
+            reset() { this.angle = Math.random() * Math.PI * 2; this.radius3d = Math.random() * 120 + 40; this.z3d = Math.random() * 100 + 100; this.speed = Math.random() * 0.01 + 0.005; this.alpha = Math.random() * 0.5 + 0.5; this.color = this.type === 'noise' ? '#ff3333' : '#56d364'; }
+            update() {
+                let distanceFactor = Math.max(5, this.z3d);
+                let pullForce = (config.gravity * 0.04) / (config.distance * (distanceFactor / 100));
+                let currentSpeed = this.speed * (350 / (distanceFactor + 30));
+                this.angle += currentSpeed * config.vortexSpeed;
 
-        // HUD DOM-элементы
-        const hudEpoch = document.getElementById("hud-epoch");
-        const hudRadius = document.getElementById("hud-radius");
-        const hudEntropy = document.getElementById("hud-entropy");
-        const hudDtau = document.getElementById("hud-dtau");
-        const hudCollatz = document.getElementById("hud-collatz");
-
-        // Главный цикл рендеринга
-        function renderLoop() {
-            // Эффект легкого шлейфа (motion blur) для визуализации траекторий графов
-            ctx.fillStyle = "rgba(5, 5, 8, 0.15)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            let leadTelemetry = null;
-
-            // Обновляем и рисуем филаменты спирали
-            particles.forEach((particle, index) => {
-                const telemetry = particle.update(0.01); // Фиксированный dt
-                particle.draw(ctx, canvas.width, canvas.height);
-                
-                // Передаем телеметрию первой частицы на HUD панель
-                if (index === 0) {
-                    leadTelemetry = telemetry;
-                }
-            });
-
-            // Динамическое обновление HUD интерфейса данными из аттрактора
-            if (leadTelemetry) {
-                const epochInfo = attractor.getEpochData(leadTelemetry.r);
-                
-                hudEpoch.innerText = epochInfo.name;
-                hudEpoch.style.color = epochInfo.color.replace(", ", ")");
-                hudRadius.innerText = leadTelemetry.r.toFixed(4);
-                hudEntropy.innerText = leadTelemetry.entropy.toFixed(4);
-                hudDtau.innerText = leadTelemetry.dtau.toFixed(4);
-                
-                if (leadTelemetry.r < 0.05) {
-                    hudCollatz.innerText = `СИНГУЛЯРНОСТЬ ЦИКЛА (4->2->1)`;
-                    hudCollatz.style.color = "#f1c40f";
+                if (this.type === 'noise') {
+                    this.radius3d -= pullForce * 0.15; this.z3d -= pullForce * 0.2; this.radius3d += (Math.random() - 0.5) * 1.5;
+                    if (this.z3d < 115 * config.distance) { this.type = 'signal'; this.color = '#56d364'; this.speed = 0.006; }
                 } else {
-                    hudCollatz.innerText = `Фильтрация...`;
-                    hudCollatz.style.color = "#ffffff";
+                    this.radius3d -= pullForce * 0.42; this.z3d -= pullForce * 0.55;
+                    if (this.z3d >= 95) this.type = 'signal';
+                    else if (this.z3d < 95 && this.z3d >= 70) { this.type = 'cyber'; this.color = '#00f3ff'; }
+                    else if (this.z3d < 70 && this.z3d >= 45) { this.type = 'mind'; this.color = '#388bfd'; }
+                    else if (this.z3d < 45 && this.z3d >= 25) { this.type = 'cloud'; this.color = '#ab47bc'; }
+                    else if (this.z3d < 25 && this.z3d >= 8) { this.type = 'nebula'; this.color = '#ffffff'; this.alpha = 0.3 + Math.sin(Date.now() * 0.02 + this.angle) * 0.2; this.radius3d += (Math.random() - 0.5) * 1.0; }
+                    else if (this.z3d < 8) { this.type = 'seed'; this.color = '#d29922'; this.alpha = 1; this.z3d = 1 + Math.sin(Date.now() * 0.08) * 0.4; this.radius3d = 2 + Math.cos(Date.now() * 0.08) * 0.4; if (Math.random() * 100 > 99.2) this.reset(); }
+                    if (this.z3d < -10) this.reset();
                 }
+                localEntropy = this.type === 'seed' ? localEntropy * 0.999 + 0.001 * 0.02 : localEntropy * 0.999 + 0.001 * Math.min(1.0, this.z3d / 180);
+                let cosY = Math.cos(Math.PI / 2.8), sinY = Math.sin(Math.PI / 2.8), x3d = Math.cos(this.angle) * this.radius3d, y3d = Math.sin(this.angle) * this.radius3d;
+                let rotatedY = y3d * cosY - this.z3d * sinY; this.rotatedZ = y3d * sinY + this.z3d * cosY;
+                let scale = config.focalLength / (config.focalLength + this.rotatedZ);
+                this.screenX = cx + x3d * scale; this.screenY = cy + (rotatedY + 60) * scale;
+                let baseSize = this.type === 'seed' ? 3.5 : (this.type === 'nebula' ? 3.5 : (this.type === 'cloud' ? 2.3 : 1.6));
+                this.projectedSize = baseSize * scale;
             }
-
-            requestAnimationFrame(renderLoop);
+            draw() {
+                if (this.projectedSize <= 0 || this.screenY > canvas.height || this.screenX > canvas.width) return;
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath(); ctx.arc(this.screenX, this.screenY, this.projectedSize, 0, Math.PI * 2); ctx.fillStyle = this.color;
+                let scale = config.focalLength / (config.focalLength + this.rotatedZ);
+                ctx.shadowBlur = this.type === 'seed' ? 14 * scale : (this.type === 'nebula' ? 8 * scale : 1 * scale); ctx.shadowColor = this.color;
+                ctx.fill(); ctx.restore();
+            }
         }
 
-        // Запуск Цифровой Вселенной
-        renderLoop();
+        function initParticles() {
+            particles = [];
+            let totalNoise = Math.floor(400 * config.noiseLevel);
+            for (let i = 0; i < totalNoise; i++) particles.push(new Particle('noise'));
+            for (let i = 0; i < 180; i++) particles.push(new Particle('signal'));
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.22)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => p.update()); particles.sort((a, b) => b.rotatedZ - a.rotatedZ); particles.forEach(p => p.draw());
+
+            const hudEpoch = document.getElementById("hud-epoch"), hudEntropy = document.getElementById("hud-entropy"), hudSieve = document.getElementById("hud-sieve");
+            if (hudEpoch && particles.length > 0) { let leadType = particles[particles.length - 1].type; hudEpoch.innerText = leadType.charAt(0).toUpperCase() + leadType.slice(1); }
+            if (hudEntropy) hudEntropy.innerText = localEntropy.toFixed(4);
+            if (hudSieve && !window.hasSocketData) {
+                if (Date.now() % 6000 < 2000) localDim = "T_3"; else if (Date.now() % 6000 < 4000) localDim = "T_5"; else localDim = "T_7";
+                hudSieve.innerHTML = `<span style="color:#00f3ff;">DIM: ${localDim} [LOCAL]</span><br>STEPS: 10 (NET: 0.0)`;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = function() { initParticles(); animate(); };
+
+        // ============================================================================
+        // HYBRID CONNECTOR BACKEND LINK
+        // ============================================================================
+        window.hasSocketData = false; const socket = new WebSocket("ws://localhost:8765");
+        socket.onopen = function(e) {
+            const gateEl = document.getElementById("hud-gate"); if (gateEl) { gateEl.innerText = "ws://localhost:8765 [CONNECTED]"; gateEl.style.color = "#56d364"; }
+            setInterval(() => { if (socket.readyState === WebSocket.OPEN) { socket.send(JSON.stringify({ id: "github_pages_mesh_node", gravity: config.gravity, distance: config.distance })); } }, 120);
+        };
+        socket.onmessage = function(event) {
+            window.hasSocketData = true; const report = JSON.parse(event.data);
+            const epochEl = document.getElementById("hud-epoch"), entropyEl = document.getElementById("hud-entropy"), sieveEl = document.getElementById("hud-sieve");
+            if (epochEl) epochEl.innerText = report.meta.type + " (" + report.meta.multiverse_dimension + ")";
+            if (entropyEl) entropyEl.innerText = report.physics.shannon_entropy.toFixed(4);
+            if (sieveEl) {
+                const sieve = report.crypto_sieve_v5, dim = report.meta.multiverse_dimension, ratio = report.network.global_convergence_ratio;
+                if (sieve.sieve_cracked) { sieveEl.innerHTML = `<span style="color:#d29922; font-weight:bold;">DIM: ${dim} [LOCKED]</span><br>SEED: ${sieve.extracted_multiverse_seed.join("-")} (NET: ${ratio})`; }
+                else { sieveEl.innerHTML = `<span style="color:#00f3ff;">DIM: ${dim} [ONLINE_SIEVE]</span><br>INTENSITY: ${sieve.intensity_steps} (NET: ${ratio})`; }
+            }
+        };
+        socket.onerror = function(err) { const gateEl = document.getElementById("hud-gate"); if (gateEl) { gateEl.innerText = "offline (автономная симуляция)"; gateEl.style.color = "#ff3333"; } };
     </script>
 </body>
 </html>
