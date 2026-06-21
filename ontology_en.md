@@ -1,4 +1,4 @@
-# Phase 1: Ontological Foundation of the Digital Cosm
+# Phase 1: Ontological Foundation of the Digital Cosmos
 
 This document postulates the fundamental properties of the Universe as a discrete, computable, and self-compressing informational system. We move away from classical materialism and pure idealism toward **computational realism**.
 
